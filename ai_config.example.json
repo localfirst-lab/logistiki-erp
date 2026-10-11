@@ -1,0 +1,78 @@
+{
+  "_comment": "Configurazione modelli AI per LogistiKI ERP — Simbio Ecosystem (Esempio per repository)",
+  "_author": "Davide Carrieri",
+
+  "vps": {
+    "host": "YOUR_VPS_HOST_OR_IP",
+    "user": "YOUR_SSH_USER",
+    "key": "~/.ssh/your_ssh_key",
+    "ollama_url_tunnel": "http://localhost:11435",
+    "note": "Tunnel SSH: ssh -i ~/.ssh/your_key -L 11435:localhost:11434 user@host -N"
+  },
+
+  "models": {
+    "extraction": {
+      "model": "qwen2.5:14b",
+      "fallback": "Simbio-Lite:latest",
+      "task": "Estrazione strutturata dati da testo Lieferschein",
+      "temperature": 0.1,
+      "max_tokens": 1024,
+      "timeout_sec": 45,
+      "prompt_language": "de+it",
+      "note": "Modello principale per OCR+AI extraction di Lieferscheine"
+    },
+    "classifier": {
+      "model": "Simbio-Lite:latest",
+      "fallback": "gemma4:e2b",
+      "task": "Classifica il tipo di documento (Lieferschein / Rechnung / Bestellung / altro)",
+      "temperature": 0.0,
+      "max_tokens": 50,
+      "timeout_sec": 15,
+      "prompt_language": "de"
+    },
+    "validator": {
+      "model": "deepseek-r1:14b",
+      "fallback": "qwen2.5:14b",
+      "task": "Validazione e correzione dati estratti (confronta coerenza campi)",
+      "temperature": 0.1,
+      "max_tokens": 512,
+      "timeout_sec": 30,
+      "prompt_language": "de+it"
+    },
+    "summarizer": {
+      "model": "Simbio:latest",
+      "fallback": "mistral:7b",
+      "task": "Genera riepilogo testuale di una Lieferschein per il log ERP",
+      "temperature": 0.3,
+      "max_tokens": 256,
+      "timeout_sec": 20,
+      "prompt_language": "it"
+    }
+  },
+
+  "pipeline": {
+    "steps": [
+      {"step": 1, "name": "document_classify", "model": "classifier", "optional": true},
+      {"step": 2, "name": "ocr_extract",       "model": null, "note": "pypdf o Tesseract locale"},
+      {"step": 3, "name": "regex_parse",        "model": null, "note": "Muster JSON regex"},
+      {"step": 4, "name": "ai_fill_missing",    "model": "extraction", "trigger": "missing_fields > 0"},
+      {"step": 5, "name": "validate",           "model": "validator",  "trigger": "artikel_count > 0"},
+      {"step": 6, "name": "summarize",          "model": "summarizer", "optional": true}
+    ],
+    "stop_on_error": false,
+    "log_each_step": true
+  },
+
+  "prompts": {
+    "extraction_system": "Du bist ein Experte fuer deutsche Logistik-Dokumente. Analysiere den Text einer Lieferschein und extrahiere die Daten als strukturiertes JSON. Antworte NUR mit dem JSON-Objekt, ohne Erklaerungen.",
+    "classifier_system": "Klassifiziere das Dokument. Antworte NUR mit einem Wort: LIEFERSCHEIN / RECHNUNG / BESTELLUNG / UNBEKANNT.",
+    "validator_system": "Pruefe die extrahierten Daten auf Konsistenz und Vollstaendigkeit. Korrigiere offensichtliche Fehler. Antworte mit dem korrigierten JSON.",
+    "summarizer_system": "Sei Simbio, l'assistente ERP di Davide Carrieri. Genera un breve riepilogo in italiano della Lieferschein ricevuta, max 2 righe."
+  },
+
+  "cmp_guardian": {
+    "active": true,
+    "no_pii_in_logs": true,
+    "sign_outputs": false
+  }
+}

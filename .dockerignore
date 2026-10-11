@@ -1,0 +1,35 @@
+# Version control
+.git
+.gitignore
+
+# Environment & Secret files
+.env
+*.env
+*.env.local
+config.json
+ai_config.json
+tunnel_new_vps.ps1
+tunnel_url.txt
+tunnel.log
+errori.log
+*.log
+
+# Binaries & large tools
+cloudflared.exe
+*.exe
+
+# Python build artifacts
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+env/
+
+# IDE & OS files
+.vscode
+.idea
+.DS_Store
+Thumbs.db

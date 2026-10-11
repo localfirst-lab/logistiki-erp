@@ -1,0 +1,97 @@
+{
+  "default": {
+    "description": "Muster generico per Lieferscheine standard DE",
+    "fields": {
+      "lieferant": {
+        "regex": ["Lieferant[:\\s]+([A-Za-z\u00c4\u00d6\u00dc\u00e4\u00f6\u00fc\u00df0-9\\s&\\.\\-]+)", "Absender[:\\s]+(.+)", "Von[:\\s]+(.+)"],
+        "ai_hint": "Nome azienda o fornitore che spedisce la merce"
+      },
+      "lieferdatum": {
+        "regex": ["Datum[:\\s]+(\\d{1,2}[./\\-]\\d{1,2}[./\\-]\\d{2,4})", "Lieferdatum[:\\s]+(\\d{1,2}[./\\-]\\d{1,2}[./\\-]\\d{2,4})", "(\\d{2}\\.\\d{2}\\.\\d{4})"],
+        "ai_hint": "Data di consegna o emissione documento"
+      },
+      "lieferschein_nr": {
+        "regex": ["Liefer-Nr\\.?[:\\s]+(\\w+)", "Lieferschein[\\-Nr\\.\\s]+(\\w+)", "LS[\\-Nr\\.\\s#]+(\\w+)", "Nummer[:\\s]+(\\d+)"],
+        "ai_hint": "Numero univoco del documento di consegna"
+      },
+      "artikel": {
+        "regex_table": "(?m)^\\s*\\d+[\\s\\t]+([A-Za-z0-9][A-Za-z0-9\\-\\.]{2,20})[\\s\\t]+([\\w\\s,\\.\\-]{3,50}?)[\\s\\t]+(\\d+(?:[.,]\\d+)?)[\\s\\t]*(Stk\\.?|St\u00fcck|kg|m|Pck|ST|KG|M)?",
+        "ai_hint": "Tabella: Pos | Art.-Nr. | Bezeichnung | Menge | Einheit"
+      },
+      "empfaenger": {
+        "regex": ["Empf\u00e4nger[:\\s]+(.+)", "Auftraggeber[:\\s]+(.+)", "Kunde[:\\s]+(.+)"],
+        "ai_hint": "Azienda o persona destinataria della merce"
+      }
+    }
+  },
+  "muster_gmbh_standard": {
+    "description": "Formato standard DE \u2014 Muster GmbH (Pos./Art.-Nr./Bezeichnung/Menge/Einheit)",
+    "notes": "Adatto alla maggior parte dei Lieferscheine tedeschi con intestazione Liefer-Nr./Kunden-Nr./Bestell-Nr. e tabella Pos/Art-Nr/Bezeichnung/Menge/Einheit",
+    "fields": {
+      "lieferant": {
+        "regex": [
+          "([A-Za-z\u00c4\u00d6\u00dc\u00e4\u00f6\u00fc\u00df0-9\\s&\\.\\-]{3,40}(?:GmbH|AG|KG|e\\.K\\.|GbR|UG|Inc|Ltd))"
+        ],
+        "ai_hint": "Nome azienda mittente/fornitore (solitamente in alto nella pagina con forma societaria GmbH/AG/KG)"
+      },
+      "lieferdatum": {
+        "regex": [
+          "Datum[:\\s\\t]+(\\d{1,2}\\.\\d{1,2}\\.\\d{2,4})",
+          "(\\d{2}\\.\\d{2}\\.20\\d{2})"
+        ],
+        "ai_hint": "Data documento nel formato GG.MM.AAAA, spesso accanto a 'Datum:'"
+      },
+      "lieferschein_nr": {
+        "regex": [
+          "Liefer-Nr\\.?[:\\s\\t]+(\\w+)",
+          "Lieferschein-?Nr\\.?[:\\s\\t]+(\\w+)",
+          "LS[\\s\\-]?(\\d{4,})"
+        ],
+        "ai_hint": "Numero Lieferschein etichettato 'Liefer-Nr.' nel documento"
+      },
+      "kunden_nr": {
+        "regex": ["Kunden-Nr\\.?[:\\s\\t]+(\\w+)", "Kundennummer[:\\s]+(\\w+)"],
+        "ai_hint": "Numero cliente (Kunden-Nr.)"
+      },
+      "bestell_nr": {
+        "regex": ["Bestell-Nr\\.?[:\\s\\t]+(\\w+)", "Bestellnummer[:\\s]+(\\w+)"],
+        "ai_hint": "Numero ordine (Bestell-Nr.)"
+      },
+      "empfaenger": {
+        "regex": [
+          "(?:Empf\u00e4nger|Lieferadresse|An)[:\\s\\n]+([A-Za-z\u00c4\u00d6\u00dc\u00e4\u00f6\u00fc\u00df\\s&\\.\\-]{3,50})"
+        ],
+        "ai_hint": "Destinatario: nome azienda e indirizzo di consegna"
+      },
+      "artikel": {
+        "regex_table": "(?m)^\\s*(\\d+)[\\s\\t]+([A-Za-z0-9][A-Za-z0-9\\-\\.]{2,20})[\\s\\t]+([\\w\\s,\\.\\-\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df]{3,60}?)[\\s\\t]+(\\d+(?:[.,]\\d+)?)[\\s\\t]*(Stk\\.?|St\u00fcck|Stk|kg|m|ST)?",
+        "ai_hint": "Tabella: Pos | Art.-Nr. | Bezeichnung | Menge | Einheit. Tipico formato: '1  B-3025-078  B-3025 Farbe Gruen  1.00  Stk.'"
+      }
+    }
+  },
+  "strahle_intern": {
+    "description": "Muster adattato a documenti interni Str\u00e4hle-style",
+    "fields": {
+      "lieferant": {
+        "regex": ["Lieferant[:\\s]+([A-Za-z\u00c4\u00d6\u00dc\u00e4\u00f6\u00fc\u00df0-9\\s]+)", "Supplier[:\\s]+(.+)"],
+        "ai_hint": "Nome fornitore"
+      },
+      "lieferdatum": {
+        "regex": ["(\\d{2}\\.\\d{2}\\.20\\d{2})"],
+        "ai_hint": "Data nel formato GG.MM.AAAA"
+      },
+      "lieferschein_nr": {
+        "regex": ["LS[\\-\\s]?(\\d{5,10})", "Nr\\.?[:\\s]+(\\d+)"],
+        "ai_hint": "Numero Lieferschein"
+      },
+      "artikel": {
+        "regex_table": "(?m)^\\s*(\\d{5,8})[\\s\\t]+([A-Za-z\u00c4\u00d6\u00dc\u00e4\u00f6\u00fc\u00df0-9\\-\\s\\.]+)[\\s\\t]+(\\d+(?:[.,]\\d+)?)[\\s\\t]*(ST|Stk)?",
+        "ai_hint": "Riga articolo: codice, descrizione, quantit\u00e0"
+      },
+      "empfaenger": {
+        "regex": ["Warenempf\u00e4nger[:\\s]+(.+)", "Empfang[:\\s]+(.+)"],
+        "ai_hint": "Destinatario merce"
+      }
+    }
+  }
+}

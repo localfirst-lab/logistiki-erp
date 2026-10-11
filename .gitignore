@@ -1,0 +1,70 @@
+# =====================================================================
+#   LogistiKI ERP — Git Ignore Rules
+#   Protects confidential credentials, private keys & system artifacts
+# =====================================================================
+
+# Credentials & Private Configurations (CRITICAL)
+config.json
+ai_config.json
+tunnel_new_vps.ps1
+.env
+*.env
+*.env.*
+*.env.local
+!.env.example
+
+# Executables, Binary Tools & Cloudflared
+cloudflared.exe
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Logs & Runtime State
+*.log
+errori.log
+tunnel.log
+tunnel_url.txt
+
+# Databases & Runtime Output
+db/*.db
+db/*.sqlite
+db/*.sqlite3
+output/etiketten/*.pdf
+!output/etiketten/.gitkeep
+
+# Python Artifacts & Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDE, OS & System Metadata
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini

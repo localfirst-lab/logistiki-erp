@@ -1,0 +1,35 @@
+version: '3.8'
+
+# =====================================================================
+#   LogistiKI ERP — Docker Compose Stack
+#   Start with: docker compose up -d
+#   Web UI:     http://localhost:5055
+# =====================================================================
+
+services:
+  logistiki-erp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: logistiki-erp
+    restart: unless-stopped
+    ports:
+      - "5055:5055"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      - PORT=5055
+      - HOST=0.0.0.0
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash}
+    volumes:
+      # Persist SQLite databases
+      - ./db:/app/db
+      # Persist generated labels
+      - ./output/etiketten:/app/output/etiketten
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5055/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"tertiary-fixed":"#feddb5","surface-container-highest":"#d3e4fe","outline-variant":"#c4c6cd","inverse-surface":"#213145","on-tertiary":"#ffffff","tertiary":"#211200","surface":"#f8f9ff","secondary-fixed":"#d8e2ff","error-container":"#ffdad6","surface-container":"#e5eeff","inverse-primary":"#b7c8de","on-secondary-fixed":"#001a42","outline":"#74777d","on-primary-container":"#8192a7","on-background":"#0b1c30","tertiary-container":"#38260b","on-secondary-fixed-variant":"#004395","surface-bright":"#f8f9ff","on-error-container":"#93000a","on-tertiary-fixed":"#281802","error":"#ba1a1a","on-primary-fixed":"#0b1d2d","primary-container":"#1a2b3c","inverse-on-surface":"#eaf1ff","tertiary-fixed-dim":"#e1c29b","surface-tint":"#4f6073","surface-container-lowest":"#ffffff","primary-fixed":"#d2e4fb","secondary":"#0058be","on-secondary":"#ffffff","surface-container-low":"#eff4ff","on-tertiary-fixed-variant":"#584326","surface-container-high":"#dce9ff","on-primary":"#ffffff","on-surface":"#0b1c30","on-secondary-container":"#fefcff","primary-fixed-dim":"#b7c8de","background":"#f8f9ff","on-primary-fixed-variant":"#38485a","on-surface-variant":"#44474c","primary":"#041627","on-tertiary-container":"#a88c69","secondary-fixed-dim":"#adc6ff","surface-variant":"#d3e4fe","surface-dim":"#cbdbf5","secondary-container":"#2170e4","on-error":"#ffffff"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"table-row-height":"48px","base":"4px","gutter":"16px","container-max":"1440px","margin":"24px"},"fontFamily":{"display-lg":["Inter"],"headline-sm":["Inter"],"body-md":["Inter"],"body-sm":["Inter"],"data-mono":["JetBrains Mono"],"headline-md":["Inter"],"label-md":["Inter"],"label-sm":["Inter"]},"fontSize":{"display-lg":["32px",{"lineHeight":"40px","letterSpacing":"-0.02em","fontWeight":"700"}],"headline-sm":["18px",{"lineHeight":"24px","fontWeight":"600"}],"body-md":["14px",{"lineHeight":"20px","fontWeight":"400"}],"body-sm":["13px",{"lineHeight":"18px","fontWeight":"400"}],"data-mono":["13px",{"lineHeight":"18px","fontWeight":"400"}],"headline-md":["24px",{"lineHeight":"32px","fontWeight":"600"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.05em","fontWeight":"600"}],"label-sm":["11px",{"lineHeight":"14px","fontWeight":"500"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface antialiased"><header class="fixed top-0 left-0 right-0 h-16 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex items-center justify-between px-margin"><div class="flex items-center gap-8"><div class="flex items-center gap-3"><div class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center text-on-primary font-headline-sm font-bold tracking-tight"><span class="material-symbols-outlined text-[20px]">deployed_code</span></div><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-primary tracking-tight">LogiTrack <span class="text-secondary">Pro</span></span><span class="font-label-sm text-label-sm text-on-surface-variant tracking-wider uppercase">ERP &amp; WMS Enterprise</span></div></div><div class="relative hidden xl:block w-72"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span><input class="w-full pl-9 pr-3 py-1.5 bg-surface-container-low rounded-lg text-body-sm font-body-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:bg-surface-container-lowest transition-colors" placeholder="Search inventory, batch, Lieferschein..." type="text"/></div></div><nav class="hidden lg:flex items-center gap-2" data-active-classes="bg-secondary-fixed text-on-secondary-fixed font-semibold rounded-lg"><a class="px-3 py-2 text-body-md font-body-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors rounded-lg" data-path="dashboard" href="#">Dashboard</a><a class="px-3 py-2 text-body-md font-body-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors rounded-lg" data-path="inventory" href="#">Inventory</a><a class="px-3 py-2 text-body-md font-body-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors rounded-lg" data-path="analytics" href="#">Analytics</a><a class="px-3 py-2 text-body-md font-body-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors rounded-lg" data-path="logistics" href="#">Logistics</a><a class="px-3 py-2 text-body-md font-body-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors rounded-lg" data-path="erp-agent-overview" href="#">Agente ERP &amp; Lieferschein</a></nav><div class="flex items-center gap-4"><button class="w-9 h-9 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">tune</span></button><button class="relative w-9 h-9 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-secondary"></span></button><div class="flex items-center gap-3 pl-2"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="hidden md:flex flex-col text-left"><span class="font-label-md text-label-md text-on-surface leading-tight">Logistics Lead</span><span class="font-label-sm text-label-sm text-on-surface-variant">WH-Frankfurt Hub</span></div></div></div></header><aside class="fixed left-0 top-16 bottom-0 w-60 bg-primary text-on-primary z-40 flex flex-col justify-between py-6 px-3 shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col gap-6"><div class="px-3"><div class="font-label-sm text-label-sm uppercase tracking-wider text-on-primary-container font-semibold">Intelligent Agent Module</div><div class="font-headline-sm text-headline-sm text-on-primary mt-0.5">OCR &amp; Routing</div></div><nav class="flex flex-col gap-1" data-active-classes="bg-primary-container text-on-primary font-semibold rounded-lg"><a class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="erp-agent-overview" href="#"><span class="material-symbols-outlined text-[20px]">dashboard</span><span>Overview</span></a><a aria-current="page" class="flex items-center gap-3 px-3 py-2.5 transition-colors bg-primary-container text-on-primary font-semibold rounded-lg" data-path="inbound-ocr-lieferschein" href="#"><span class="material-symbols-outlined text-[20px]">document_scanner</span><span>Inbound / Carico Merci</span></a><a class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="outbound-paperless-qr" href="#"><span class="material-symbols-outlined text-[20px]">qr_code_2</span><span>Outbound / Spedizioni</span></a><a class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="scanner-and-labels" href="#"><span class="material-symbols-outlined text-[20px]">barcode_scanner</span><span>Scanner &amp; Etichette</span></a><a class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-body-md text-body-md text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" data-path="agent-settings" href="#"><span class="material-symbols-outlined text-[20px]">settings</span><span>Settings</span></a></nav></div><div class="px-3 pt-4 bg-primary-container rounded-lg"><div class="flex items-center justify-between mb-2"><span class="font-label-sm text-label-sm text-on-primary-container font-medium">OCR Engine Status</span><span class="w-2 h-2 rounded-full bg-secondary-fixed"></span></div><div class="font-data-mono text-data-mono text-on-primary text-xs">Agent v4.2.0 • Online</div><div class="font-label-sm text-label-sm text-on-primary-container mt-1">Sync Latency: 42ms</div></div></aside><div class="pl-60"><main class="w-full pt-16 bg-background min-h-screen px-margin"><div class="flex flex-col w-full pb-16">
+<!-- Top Operational Banner & Agent Status -->
+<section class="w-full mb-6">
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 relative overflow-hidden">
+<div class="absolute -right-16 -top-16 w-64 h-64 bg-secondary-fixed/30 rounded-full blur-3xl pointer-events-none"></div>
+<div class="flex flex-col gap-1.5 z-10">
+<div class="flex items-center gap-3">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container text-secondary font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+            PIPELINE ATTIVA
+          </span>
+<span class="font-data-mono text-data-mono text-on-surface-variant">Engine: pdftotext &amp; Vision-OCR v3.4</span>
+</div>
+<h1 class="font-headline-md text-headline-md text-primary tracking-tight">Inbound OCR &amp; Acquisizione Lieferschein</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Ricezione merci automatizzata, estrazione metadati vettoriali e allocazione dinamica locazioni WMS.</p>
+</div>
+<div class="flex flex-wrap items-center gap-3 z-10 w-full xl:w-auto">
+<button class="flex-1 xl:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-surface-container-low hover:bg-surface-container text-primary font-headline-sm text-body-md rounded-lg shadow-sm transition-all active:scale-[0.98]" id="btn-camera">
+<span class="material-symbols-outlined text-[20px] text-secondary">photo_camera</span>
+<span>Scansione Camera/Scanner</span>
+</button>
+<button class="flex-1 xl:flex-none flex items-center justify-center gap-2 px-5 py-2.5 bg-secondary hover:bg-secondary-container text-on-secondary font-headline-sm text-body-md rounded-lg shadow-sm transition-all active:scale-[0.98]" id="btn-upload">
+<span class="material-symbols-outlined text-[20px]">upload_file</span>
+<span>Carica Nuova Lieferschein (PDF / Scan)</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Dual Split Main Workspace -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mb-8">
+<!-- Left Column: Document Viewer with Real-Time OCR Bounding Boxes -->
+<div class="lg:col-span-6 flex flex-col gap-4">
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm">
+<div class="flex items-center justify-between pb-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">picture_as_pdf</span>
+</div>
+<div>
+<div class="font-headline-sm text-body-md text-primary">LS-2023-89421.pdf</div>
+<div class="font-data-mono text-data-mono text-on-surface-variant text-xs">Fornitore: Hans Müller GmbH • 4.1 MB</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-secondary-fixed text-on-secondary-fixed font-data-mono text-xs">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span> 99.8% Match
+            </span>
+<button class="w-8 h-8 rounded-lg hover:bg-surface-container flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">zoom_in</span>
+</button>
+</div>
+</div>
+<!-- Simulated Document Canvas -->
+<div class="relative w-full bg-surface-container-low rounded-lg p-6 overflow-hidden min-h-[580px] shadow-inner select-none">
+<!-- OCR Overlay Layer & Bounding Boxes -->
+<div class="relative bg-surface-container-lowest w-full rounded shadow-sm p-6 text-on-surface space-y-6">
+<!-- Header of Scanned Paper -->
+<div class="flex justify-between items-start">
+<div class="relative group p-1.5 -m-1.5 rounded transition-all bg-secondary-fixed/40">
+<span class="absolute -top-3 left-0 bg-secondary text-on-secondary font-data-mono text-[10px] px-1 rounded shadow-sm">SUPPLIER_NAME [99.9%]</span>
+<p class="font-headline-sm text-body-md text-primary font-bold">Hans Müller GmbH &amp; Co. KG</p>
+<p class="font-body-sm text-xs text-on-surface-variant">Industriestraße 44, 70565 Stuttgart, DE</p>
+<p class="font-body-sm text-xs text-on-surface-variant">USt-IdNr: DE 147 882 109</p>
+</div>
+<div class="text-right">
+<div class="relative inline-block p-1.5 -m-1.5 rounded bg-secondary-fixed/40">
+<span class="absolute -top-3 right-0 bg-secondary text-on-secondary font-data-mono text-[10px] px-1 rounded shadow-sm">DOC_ID [100%]</span>
+<div class="font-headline-sm text-headline-sm text-primary uppercase">Lieferschein</div>
+<div class="font-data-mono text-data-mono font-bold text-secondary">Nr. LS-2023-89421</div>
+</div>
+</div>
+</div>
+<!-- Meta attributes grid -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 py-3 bg-surface-container-low/60 p-3 rounded-lg">
+<div class="relative p-1 rounded bg-secondary-fixed/40">
+<span class="absolute -top-3 left-1 bg-secondary text-on-secondary font-data-mono text-[9px] px-1 rounded">PO_REF [99.7%]</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Nr. Ordine Acquisto</span>
+<span class="font-data-mono text-data-mono font-semibold text-primary">#PO-99412</span>
+</div>
+<div class="relative p-1 rounded bg-secondary-fixed/40">
+<span class="absolute -top-3 left-1 bg-secondary text-on-secondary font-data-mono text-[9px] px-1 rounded">DOC_DATE [99.9%]</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Data Spedizione</span>
+<span class="font-data-mono text-data-mono text-primary">24.10.2023</span>
+</div>
+<div class="relative p-1 rounded bg-secondary-fixed/40">
+<span class="absolute -top-3 left-1 bg-secondary text-on-secondary font-data-mono text-[9px] px-1 rounded">ETA [99.4%]</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Data Consegna</span>
+<span class="font-data-mono text-data-mono font-semibold text-primary">26.10.2023</span>
+</div>
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Vettore Merci</span>
+<span class="font-body-sm text-body-sm text-primary">DHL Freight Exp.</span>
+</div>
+</div>
+<!-- Document Line Items Table with Highlighted OCR rows -->
+<div class="relative">
+<div class="absolute -top-3 left-2 bg-secondary text-on-secondary font-data-mono text-[9px] px-1.5 rounded z-10">TABLE_EXTRACT: 4 SKU [99.8%]</div>
+<table class="w-full text-left font-body-sm text-xs">
+<thead>
+<tr class="bg-surface-container-high text-on-surface">
+<th class="py-2 px-2.5 font-semibold">Pos</th>
+<th class="py-2 px-2.5 font-semibold">Cod. Articolo</th>
+<th class="py-2 px-2.5 font-semibold">Descrizione</th>
+<th class="py-2 px-2.5 font-semibold text-right">Qtà</th>
+<th class="py-2 px-2.5 font-semibold">U.M.</th>
+</tr>
+</thead>
+<tbody class="divide-y-0">
+<tr class="bg-secondary-fixed/30 text-on-surface">
+<td class="py-2 px-2.5 font-data-mono">01</td>
+<td class="py-2 px-2.5 font-data-mono font-semibold text-secondary">SKU-BRG-4401</td>
+<td class="py-2 px-2.5">Cuscinetto Radiale Skf 6204-2RSH</td>
+<td class="py-2 px-2.5 font-data-mono text-right font-bold text-primary">120</td>
+<td class="py-2 px-2.5">PZ</td>
+</tr>
+<tr class="bg-secondary-fixed/20 text-on-surface">
+<td class="py-2 px-2.5 font-data-mono">02</td>
+<td class="py-2 px-2.5 font-data-mono font-semibold text-secondary">SKU-VLT-1109</td>
+<td class="py-2 px-2.5">Valvola Proporzionale 24V DC</td>
+<td class="py-2 px-2.5 font-data-mono text-right font-bold text-primary">15</td>
+<td class="py-2 px-2.5">PZ</td>
+</tr>
+<tr class="text-on-surface-variant">
+<td class="py-2 px-2.5 font-data-mono">03</td>
+<td class="py-2 px-2.5 font-data-mono">SKU-SRV-9080</td>
+<td class="py-2 px-2.5">Servomotore Brushless 400W</td>
+<td class="py-2 px-2.5 font-data-mono text-right">4</td>
+<td class="py-2 px-2.5">PZ</td>
+</tr>
+<tr class="text-on-surface-variant">
+<td class="py-2 px-2.5 font-data-mono">04</td>
+<td class="py-2 px-2.5 font-data-mono">SKU-CAB-0045</td>
+<td class="py-2 px-2.5">Cavo Schermato PUR 4x0.75mm (100m)</td>
+<td class="py-2 px-2.5 font-data-mono text-right">2</td>
+<td class="py-2 px-2.5">ROL</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Footer doc signature simulation -->
+<div class="flex justify-between items-end pt-4 text-on-surface-variant text-[11px]">
+<div>
+<span>Spedito da: Magazzino Centrale Böblingen</span>
+<p>Colli totali: 3 Europallet (EPAL)</p>
+</div>
+<div class="text-right">
+<span class="font-data-mono">Controllo Qualità: APPROVATO (Sigillo #409)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Extraction Confidence Breakdown -->
+<div class="mt-4 flex flex-wrap items-center justify-between gap-3 p-3 bg-surface-container-low rounded-lg font-body-sm text-xs text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-secondary">verified</span>
+<span>Parsing pdftotext verificato con checksum di riga</span>
+</div>
+<div class="flex items-center gap-4 font-data-mono">
+<span>Header: 100%</span>
+<span>Tabelle: 99.8%</span>
+<span>Barcode Doc: Riconosciuto</span>
+</div>
+</div>
+</div>
+<!-- Action Box under preview -->
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px]">history</span>
+<span>Acquisito alle 10:42 da Agente WMS Frankfurt Node-02</span>
+</div>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-primary font-label-md text-label-md transition-colors">
+          Rilancia OCR Completo
+        </button>
+</div>
+</div>
+<!-- Right Column: AI Decision Engine & Warehouse Placement -->
+<div class="lg:col-span-6 flex flex-col gap-6">
+<!-- AI Results Card -->
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center text-on-secondary">
+<span class="material-symbols-outlined text-[20px]">psychology</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-primary">Risultati Agente AI &amp; Decision Engine</h2>
+<span class="font-body-sm text-xs text-on-surface-variant">Analisi semantica e riscontro automatico con SAP ERP</span>
+</div>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-semibold">
+            Status: Match Valido
+          </span>
+</div>
+<!-- Confirmed Extracted Data Tiles -->
+<div class="grid grid-cols-3 gap-3 mb-5">
+<div class="p-3 bg-surface-container-low rounded-lg">
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase">N. Ordine d'Acquisto</div>
+<div class="font-headline-sm text-body-md text-primary font-bold mt-0.5">PO-99412</div>
+<div class="font-label-sm text-[11px] text-secondary mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">check_circle</span> Riconciliato SAP
+            </div>
+</div>
+<div class="p-3 bg-surface-container-low rounded-lg">
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase">Fornitore Ufficiale</div>
+<div class="font-headline-sm text-body-md text-primary font-bold mt-0.5 truncate">Hans Müller GmbH</div>
+<div class="font-label-sm text-[11px] text-on-surface-variant mt-1">Vendor ID: V-44820</div>
+</div>
+<div class="p-3 bg-surface-container-low rounded-lg">
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase">Totale Posizioni</div>
+<div class="font-headline-sm text-body-md text-primary font-bold mt-0.5">4 SKU (141 PZ)</div>
+<div class="font-label-sm text-[11px] text-secondary mt-1">Peso stimato: 38.4 kg</div>
+</div>
+</div>
+<!-- Algoritmo di Allocazione Scaffale Ottimale -->
+<div class="bg-surface-container-low p-4 rounded-xl mb-5">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">hub</span>
+<span class="font-headline-sm text-body-md text-primary">Algoritmo di Allocazione Scaffale Ottimale</span>
+</div>
+<span class="font-data-mono text-data-mono text-xs bg-surface-container-highest px-2 py-0.5 rounded text-on-surface">Auto-Slotting Engine</span>
+</div>
+<!-- Racking visual representation & reasoning -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+<!-- 2D/3D Schematized Rack Visualization (Inline SVG) -->
+<div class="md:col-span-5 bg-surface-container-lowest rounded-lg p-3 flex flex-col items-center justify-center">
+<span class="font-label-sm text-[10px] text-on-surface-variant uppercase tracking-wider mb-2">RACK MAP: CORSIA B / CAMPATA 04</span>
+<svg class="w-full h-28 text-outline-variant" viewbox="0 0 200 130">
+<!-- Rack Frame Structure -->
+<rect fill="#eff4ff" height="110" rx="3" stroke="none" width="180" x="10" y="10"></rect>
+<line stroke="#c4c6cd" stroke-width="2" x1="10" x2="190" y1="46" y2="46"></line>
+<line stroke="#c4c6cd" stroke-width="2" x1="10" x2="190" y1="82" y2="82"></line>
+<line stroke="#c4c6cd" stroke-width="1.5" x1="70" x2="70" y1="10" y2="120"></line>
+<line stroke="#c4c6cd" stroke-width="1.5" x1="130" x2="130" y1="10" y2="120"></line>
+<!-- Shelf Cells: Non-allocated ones -->
+<rect fill="#dce9ff" height="28" opacity="0.6" rx="2" width="52" x="14" y="14"></rect>
+<rect fill="#dce9ff" height="28" opacity="0.4" rx="2" width="52" x="74" y="14"></rect>
+<rect fill="#dce9ff" height="28" opacity="0.8" rx="2" width="52" x="134" y="14"></rect>
+<rect fill="#dce9ff" height="28" opacity="0.5" rx="2" width="52" x="14" y="50"></rect>
+<!-- SELECTED OPTIMAL BIN (Corsia B, Scaffale 04, Livello 2, Bin 12) -->
+<g class="animate-pulse">
+<rect fill="#0058be" height="28" rx="2" width="52" x="74" y="50"></rect>
+<text fill="#ffffff" font-family="JetBrains Mono" font-size="9" font-weight="bold" text-anchor="middle" x="100" y="68">BIN 12</text>
+</g>
+<rect fill="#dce9ff" height="28" opacity="0.7" rx="2" width="52" x="134" y="50"></rect>
+<rect fill="#dce9ff" height="28" opacity="0.3" rx="2" width="52" x="14" y="86"></rect>
+<rect fill="#dce9ff" height="28" opacity="0.9" rx="2" width="52" x="74" y="86"></rect>
+<rect fill="#dce9ff" height="28" opacity="0.2" rx="2" width="52" x="134" y="86"></rect>
+</svg>
+<div class="mt-1 flex items-center gap-1.5 font-data-mono text-[11px] text-secondary font-bold">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+                LOC: B-04-L2-B12
+              </div>
+</div>
+<!-- Allocation Logic description -->
+<div class="md:col-span-7 flex flex-col justify-between h-full">
+<div class="space-y-1.5">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-body-md text-primary font-bold">Corsia B • Scaffale 04 • Liv. 2 • Bin 12</span>
+</div>
+<div class="p-2.5 bg-surface-container-lowest rounded text-on-surface-variant font-body-sm text-xs leading-relaxed">
+<strong class="text-primary">Motivazione AI:</strong> Zona a rotazione rapida (Fast-Mover Classe A). Dimensioni compatibili con cassa KLT 400x300, peso lotto unitario 4.2kg, baricentro ergonomico operatore (altezza 1.10m).
+                </div>
+</div>
+<div class="mt-2.5 flex items-center justify-between text-xs font-label-sm">
+<span class="text-on-surface-variant">Capacità Residua Bin: <strong class="text-primary">68%</strong></span>
+<span class="text-secondary font-semibold">Distanza da Baia: 14m</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Real-Time Generated Zebra Warehouse Label Preview -->
+<div class="border-0 bg-surface-container-lowest p-4 rounded-xl shadow-sm mb-5">
+<div class="flex items-center justify-between mb-3">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Anteprima Etichetta di Magazzino (Generata in tempo reale)</span>
+<span class="font-data-mono text-[11px] text-on-surface-variant">ZPL-II Stream Ready</span>
+</div>
+<!-- The Physical Label Mockup -->
+<div class="bg-surface-container-lowest p-4 rounded-lg shadow-md max-w-md mx-auto text-primary">
+<div class="flex justify-between items-start pb-2">
+<div>
+<span class="font-headline-sm text-headline-sm font-bold tracking-tight block">SKU-BRG-4401</span>
+<span class="font-body-sm text-xs text-on-surface-variant">Cuscinetto Radiale Skf 6204-2RSH</span>
+</div>
+<!-- Datamatrix 2D Simulation -->
+<svg class="shrink-0" height="40" viewbox="0 0 40 40" width="40">
+<rect fill="#041627" height="40" rx="2" width="40"></rect>
+<rect fill="#ffffff" height="8" width="8" x="4" y="4"></rect>
+<rect fill="#ffffff" height="4" width="4" x="16" y="4"></rect>
+<rect fill="#ffffff" height="4" width="12" x="24" y="4"></rect>
+<rect fill="#ffffff" height="4" width="8" x="4" y="16"></rect>
+<rect fill="#ffffff" height="8" width="8" x="16" y="12"></rect>
+<rect fill="#ffffff" height="8" width="8" x="28" y="12"></rect>
+<rect fill="#ffffff" height="12" width="4" x="4" y="24"></rect>
+<rect fill="#ffffff" height="4" width="12" x="12" y="24"></rect>
+<rect fill="#ffffff" height="4" width="4" x="12" y="32"></rect>
+<rect fill="#ffffff" height="12" width="8" x="28" y="24"></rect>
+</svg>
+</div>
+<!-- Big Warehouse Location Indicator Badge -->
+<div class="my-3 py-2 px-3 bg-primary text-on-primary rounded flex items-center justify-between">
+<div>
+<span class="font-label-sm text-[10px] uppercase text-on-primary-container block">Locazione di Stoccaggio</span>
+<span class="font-data-mono text-headline-sm font-bold text-on-primary">#LOC-B04-L2-B12</span>
+</div>
+<span class="font-headline-sm text-xs bg-secondary px-2 py-1 rounded text-on-secondary">ZONA PICK</span>
+</div>
+<div class="grid grid-cols-2 gap-2 text-xs py-1">
+<div>
+<span class="text-on-surface-variant block font-label-sm text-[10px]">Data Ricezione:</span>
+<span class="font-data-mono font-semibold">2023-10-26 10:42</span>
+</div>
+<div>
+<span class="text-on-surface-variant block font-label-sm text-[10px]">Lotto Fornitore:</span>
+<span class="font-data-mono font-semibold">LOT-HM-23910</span>
+</div>
+</div>
+<!-- Code 128 Barcode Simulation -->
+<div class="pt-2 flex flex-col items-center">
+<svg class="w-full h-10" viewbox="0 0 280 40">
+<rect fill="#041627" height="40" width="2" x="0" y="0"></rect>
+<rect fill="#041627" height="40" width="4" x="4" y="0"></rect>
+<rect fill="#041627" height="40" width="2" x="12" y="0"></rect>
+<rect fill="#041627" height="40" width="6" x="18" y="0"></rect>
+<rect fill="#041627" height="40" width="2" x="28" y="0"></rect>
+<rect fill="#041627" height="40" width="4" x="34" y="0"></rect>
+<rect fill="#041627" height="40" width="8" x="42" y="0"></rect>
+<rect fill="#041627" height="40" width="2" x="54" y="0"></rect>
+<rect fill="#041627" height="40" width="6" x="60" y="0"></rect>
+<rect fill="#041627" height="40" width="4" x="70" y="0"></rect>
+<rect fill="#041627" height="40" width="2" x="78" y="0"></rect>
+<rect fill="#041627" height="40" width="8" x="84" y="0"></rect>
+<rect fill="#041627" height="40" width="4" x="96" y="0"></rect>
+<rect fill="#041627" height="40" width="2" x="104" y="0"></rect>
+<rect fill="#041627" height="40" width="6" x="110" y="0"></rect>
+<rect fill="#041627" height="40" width="4" x="120" y="0"></rect>
+<rect fill="#041627" height="40" width="8" x="128" y="0"></rect>
+<rect fill="#041627" height="40" width="2" x="140" y="0"></rect>
+<rect fill="#041627" height="40" width="4" x="146" y="0"></rect>
+<rect fill="#041627" height="40" width="6" x="154" y="0"></rect>
+<rect fill="#041627" height="40" width="2" x="164" y="0"></rect>
+<rect fill="#041627" height="40" width="8" x="170" y="0"></rect>
+<rect fill="#041627" height="40" width="4" x="182" y="0"></rect>
+<rect fill="#041627" height="40" width="2" x="190" y="0"></rect>
+<rect fill="#041627" height="40" width="6" x="196" y="0"></rect>
+<rect fill="#041627" height="40" width="2" x="206" y="0"></rect>
+<rect fill="#041627" height="40" width="8" x="212" y="0"></rect>
+<rect fill="#041627" height="40" width="4" x="224" y="0"></rect>
+<rect fill="#041627" height="40" width="2" x="232" y="0"></rect>
+<rect fill="#041627" height="40" width="6" x="238" y="0"></rect>
+<rect fill="#041627" height="40" width="4" x="248" y="0"></rect>
+<rect fill="#041627" height="40" width="8" x="256" y="0"></rect>
+<rect fill="#041627" height="40" width="2" x="268" y="0"></rect>
+<rect fill="#041627" height="40" width="4" x="274" y="0"></rect>
+</svg>
+<span class="font-data-mono text-[10px] tracking-widest text-on-surface-variant mt-1">(01)04012345678901(10)LOT23910</span>
+</div>
+</div>
+</div>
+<!-- Quick Action Buttons -->
+<div class="flex flex-col sm:flex-row items-center gap-3">
+<button class="w-full sm:flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-secondary hover:bg-secondary-container text-on-secondary font-headline-sm text-body-md rounded-lg shadow-sm transition-all active:scale-[0.99]" id="btn-confirm-erp">
+<span class="material-symbols-outlined text-[20px]">cloud_done</span>
+<span>Conferma e Salva a Gestionale ERP</span>
+</button>
+<button class="w-full sm:w-auto flex items-center justify-center gap-2 py-3 px-4 bg-surface-container-high hover:bg-surface-container-highest text-primary font-headline-sm text-body-md rounded-lg shadow-sm transition-all active:scale-[0.99]" id="btn-print-zebra">
+<span class="material-symbols-outlined text-[20px]">print</span>
+<span>Stampa Etichetta Zebra</span>
+</button>
+<button class="w-full sm:w-auto flex items-center justify-center gap-2 py-3 px-3 bg-surface-container-low hover:bg-surface-container text-on-surface-variant hover:text-on-surface font-headline-sm text-body-md rounded-lg transition-colors" id="btn-manual-edit" title="Modifica Manuale">
+<span class="material-symbols-outlined text-[20px]">edit_note</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom Table: Storico ultime Lieferschein elaborate oggi -->
+<section class="w-full bg-surface-container-lowest rounded-xl p-5 shadow-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 gap-3">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary">Storico Lieferschein Acquisite Oggi</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Archivio elaborazioni automatiche OCR, log agente e stato integrazione ERP</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Totale Odierno: <strong class="text-primary">18 Documenti</strong></span>
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-primary font-label-md text-label-md transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">file_download</span> Esporta Log
+        </button>
+</div>
+</div>
+<!-- Data Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left font-body-sm text-body-sm">
+<thead>
+<tr class="bg-surface-container text-on-surface font-label-md text-label-md uppercase tracking-wider">
+<th class="py-3 px-4">Ora / Timestamp</th>
+<th class="py-3 px-4">Doc / Lieferschein Nr.</th>
+<th class="py-3 px-4">Fornitore / Spedizioniere</th>
+<th class="py-3 px-4 text-right">PO SAP</th>
+<th class="py-3 px-4 text-right">SKU / Righe</th>
+<th class="py-3 px-4">Locazione Assegnata</th>
+<th class="py-3 px-4">Stato Pipeline</th>
+<th class="py-3 px-4 text-right">Azioni</th>
+</tr>
+</thead>
+<tbody class="divide-y-0">
+<!-- Row 1 (Current Active Item) -->
+<tr class="bg-secondary-fixed/20 hover:bg-secondary-fixed/30 transition-colors">
+<td class="py-3 px-4 font-data-mono text-xs">10:42:15</td>
+<td class="py-3 px-4 font-data-mono font-semibold text-secondary">LS-2023-89421</td>
+<td class="py-3 px-4 font-medium text-primary">Hans Müller GmbH &amp; Co. KG</td>
+<td class="py-3 px-4 font-data-mono text-right">#PO-99412</td>
+<td class="py-3 px-4 font-data-mono text-right">4 SKU</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 font-data-mono text-xs px-2 py-0.5 rounded bg-surface-container-highest text-primary">
+                LOC-B04-L2-B12
+              </span>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                In Validazione
+              </span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="text-secondary hover:text-on-secondary-fixed-variant p-1">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 font-data-mono text-xs text-on-surface-variant">10:14:02</td>
+<td class="py-3 px-4 font-data-mono font-semibold text-primary">LS-2023-77290</td>
+<td class="py-3 px-4">Bosch Rexroth AG</td>
+<td class="py-3 px-4 font-data-mono text-right">#PO-99380</td>
+<td class="py-3 px-4 font-data-mono text-right">12 SKU</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 font-data-mono text-xs px-2 py-0.5 rounded bg-surface-container text-on-surface">
+                LOC-A01-L1-B02
+              </span>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-highest text-on-secondary-fixed font-label-sm text-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                Archiviato in ERP
+              </span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="text-on-surface-variant hover:text-primary p-1">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 font-data-mono text-xs text-on-surface-variant">09:48:33</td>
+<td class="py-3 px-4 font-data-mono font-semibold text-primary">LF-89104-IT</td>
+<td class="py-3 px-4">Marposs Italia S.p.A.</td>
+<td class="py-3 px-4 font-data-mono text-right">#PO-99371</td>
+<td class="py-3 px-4 font-data-mono text-right">2 SKU</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 font-data-mono text-xs px-2 py-0.5 rounded bg-surface-container text-on-surface">
+                LOC-C12-L3-B04
+              </span>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-highest text-on-secondary-fixed font-label-sm text-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                Archiviato in ERP
+              </span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="text-on-surface-variant hover:text-primary p-1">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 (Anomaly/Check) -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 font-data-mono text-xs text-on-surface-variant">09:12:11</td>
+<td class="py-3 px-4 font-data-mono font-semibold text-primary">LS-DE-55421</td>
+<td class="py-3 px-4">Festo Didactic SE</td>
+<td class="py-3 px-4 font-data-mono text-right text-error font-semibold">#PO-DISCR</td>
+<td class="py-3 px-4 font-data-mono text-right">1 SKU</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 font-data-mono text-xs px-2 py-0.5 rounded bg-error-container text-on-error-container">
+                QUARANTENA-01
+              </span>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-error-container text-on-error-container font-label-sm text-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                Da Verificare
+              </span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="text-error hover:text-on-error-container p-1">
+<span class="material-symbols-outlined text-[18px]">rule</span>
+</button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 font-data-mono text-xs text-on-surface-variant">08:35:49</td>
+<td class="py-3 px-4 font-data-mono font-semibold text-primary">LS-2023-88102</td>
+<td class="py-3 px-4">Siemens Logistics AG</td>
+<td class="py-3 px-4 font-data-mono text-right">#PO-99320</td>
+<td class="py-3 px-4 font-data-mono text-right">8 SKU</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 font-data-mono text-xs px-2 py-0.5 rounded bg-surface-container text-on-surface">
+                LOC-D02-L1-B08
+              </span>
+</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-highest text-on-secondary-fixed font-label-sm text-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                Archiviato in ERP
+              </span>
+</td>
+<td class="py-3 px-4 text-right">
+<button class="text-on-surface-variant hover:text-primary p-1">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<script>
+  // Interactive micro-feedbacks for buttons
+  document.getElementById('btn-confirm-erp')?.addEventListener('click', function() {
+    const originalText = this.innerHTML;
+    this.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-spin">sync</span><span>Sincronizzazione SAP ERP...</span>';
+    this.classList.add('opacity-80', 'pointer-events-none');
+    setTimeout(() => {
+      this.innerHTML = '<span class="material-symbols-outlined text-[20px]">check_circle</span><span>Confermato &amp; Inserito in ERP!</span>';
+      this.classList.remove('opacity-80');
+      this.classList.replace('bg-secondary', 'bg-surface-container-highest');
+      this.classList.replace('text-on-secondary', 'text-primary');
+    }, 1200);
+  });
+
+  document.getElementById('btn-print-zebra')?.addEventListener('click', function() {
+    const originalText = this.innerHTML;
+    this.innerHTML = '<span class="material-symbols-outlined text-[20px]">hourglass_top</span><span>Invio a ZT411...</span>';
+    setTimeout(() => {
+      this.innerHTML = '<span class="material-symbols-outlined text-[20px]">done_all</span><span>Etichetta Inviata</span>';
+      setTimeout(() => { this.innerHTML = originalText; }, 2000);
+    }, 800);
+  });
+</script></main></div></body></html>

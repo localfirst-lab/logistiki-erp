@@ -1,0 +1,27 @@
+{
+  "_comment": "MCP Config per LogistiKI ERP — Da copiare in .gemini/config/mcp_config.json o usare standalone",
+  "_doc": "https://modelcontextprotocol.io/docs/concepts/configuration",
+
+  "mcpServers": {
+    "logistiki-erp": {
+      "command": "C:\\Users\\Davide\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+      "args": [
+        "C:\\Users\\Davide\\.antigravity\\logistiki_erp\\mcp\\logistiki_mcp_server.py"
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8",
+        "LOGISTIKI_DB": "C:\\Users\\Davide\\.antigravity\\logistiki_erp\\db\\erp_demo.db"
+      },
+      "description": "LogistiKI ERP — Tool per gestione Lieferscheine, Buchungen, Artikelstamm e QR etichette",
+      "tools_summary": [
+        "logistiki_get_artikel      — Cerca articoli nel magazzino",
+        "logistiki_get_buchungen    — Lista ultimi ingressi merce",
+        "logistiki_scan_text        — Estrae dati da testo Lieferschein",
+        "logistiki_buchen           — Registra Wareneingang in ERP",
+        "logistiki_create_lieferschein — Crea LS in uscita",
+        "logistiki_bestand_check    — Verifica giacenza articoli",
+        "logistiki_status           — Stato generale ERP"
+      ]
+    }
+  }
+}

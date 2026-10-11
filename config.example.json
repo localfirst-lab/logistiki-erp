@@ -1,0 +1,25 @@
+{
+  "_comment": "Template di configurazione per LogistiKI ERP. Copia questo file in 'config.json' e inserisci le tue chiavi.",
+  "gemini": {
+    "api_key_primary": "INSERISCI_QUI_CHIAVE_1",
+    "api_key_backup": "INSERISCI_QUI_CHIAVE_2_OPZIONALE",
+    "model": "gemini-2.5-flash",
+    "fallback_model": "gemini-2.0-flash",
+    "temperature": 0.1,
+    "max_output_tokens": 2048
+  },
+  "server": {
+    "host": "0.0.0.0",
+    "port": 5055,
+    "debug": false
+  },
+  "ollama_fallback": {
+    "enabled": false,
+    "url": "http://localhost:11435",
+    "model": "gemma4:e4b"
+  },
+  "logging": {
+    "error_log_file": "errori.log",
+    "db_log_errors": true
+  }
+}

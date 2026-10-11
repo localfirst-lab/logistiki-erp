@@ -1,0 +1,1852 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>LogistiKI Pro — ERP & WMS Enterprise (Simbio Ecosystem)</title>
+  <meta name="description" content="Autonomer KI-Agent für deutsche Lieferscheine: OCR, Vision, Pydantic-AI, Human-in-the-Loop Buchung, automatische Regal-Zuweisung und papierloser Warenausgang."/>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#041627",
+            "primary-container": "#1a2b3c",
+            "on-primary": "#ffffff",
+            "on-primary-container": "#8192a7",
+            secondary: "#0058be",
+            "secondary-container": "#2170e4",
+            "on-secondary": "#ffffff",
+            "secondary-fixed": "#d8e2ff",
+            "on-secondary-fixed": "#001a42",
+            background: "#f8f9ff",
+            "on-background": "#0b1c30",
+            surface: "#f8f9ff",
+            "on-surface": "#0b1c30",
+            "on-surface-variant": "#44474c",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#eff4ff",
+            "surface-container": "#e5eeff",
+            "surface-container-high": "#dce9ff",
+            "surface-container-highest": "#d3e4fe",
+            error: "#ba1a1a",
+            "error-container": "#ffdad6",
+            "on-error-container": "#93000a",
+            success: "#15803d",
+            "success-container": "#dcfce7"
+          },
+          fontFamily: {
+            sans: ["Inter", "system-ui", "sans-serif"],
+            mono: ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #eff4ff; }
+    ::-webkit-scrollbar-thumb { background: #b7c8de; border-radius: 3px; }
+    .badge-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
+  </style>
+</head>
+<body class="bg-background font-sans text-on-surface antialiased">
+
+  <!-- ================= TOPBAR ================= -->
+  <!-- ================= TOPBAR (2-TIER ENTERPRISE HEADER) ================= -->
+  <header class="fixed top-0 left-0 right-0 h-[96px] bg-surface-container-lowest border-b border-surface-container shadow-sm z-50 flex flex-col justify-between">
+    <!-- TIER 1 (TOP ROW): Logo & System Identity + Status & Davide Carrieri Profile -->
+    <div class="h-[50px] w-full px-6 flex items-center justify-between border-b border-surface-container/60">
+      <!-- Left: Logo & Subtitle -->
+      <div class="flex items-center gap-3 cursor-pointer" onclick="showTab('inbound')">
+        <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-on-primary shadow-sm ring-1 ring-secondary/20 flex-shrink-0">
+          <span class="material-symbols-outlined text-[20px]">deployed_code</span>
+        </div>
+        <div class="flex items-center gap-2.5">
+          <span class="font-extrabold text-lg text-primary tracking-tight">LogistiKI <span class="text-secondary">Pro</span></span>
+          <span class="text-[9px] bg-secondary-fixed text-on-secondary-fixed font-mono px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">v4.2 Enterprise</span>
+          <span class="hidden md:inline text-xs text-on-surface-variant font-medium border-l border-surface-container pl-2.5">ERP &amp; WMS Autonomous Agent</span>
+        </div>
+      </div>
+
+      <!-- Right: Eco Counter + Gemini Status + Davide Carrieri Profile (Spazio dedicato, MAI tagliato) -->
+      <div class="flex items-center gap-3.5 flex-shrink-0">
+        <!-- Paper Saved Counter -->
+        <div class="flex items-center gap-1.5 px-3 py-1 bg-success-container text-success rounded-full font-mono text-xs font-semibold shadow-2xs whitespace-nowrap">
+          <span class="material-symbols-outlined text-[15px]">eco</span>
+          <span id="top-paper-counter">3.892 Blatt Papier gespart</span>
+        </div>
+
+        <!-- AI Engine Status -->
+        <div class="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-surface-container-low border border-surface-container text-xs font-mono whitespace-nowrap">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 badge-pulse flex-shrink-0"></span>
+          <span class="text-primary font-bold" id="top-model-name">Gemini 2.5 Flash</span>
+          <span class="text-on-surface-variant text-[11px] hidden sm:inline" id="top-model-sub">(Google AI Cloud)</span>
+        </div>
+
+        <!-- Profile: Davide Carrieri -->
+        <div class="flex items-center gap-2.5 pl-3 border-l border-surface-container flex-shrink-0">
+          <div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-xs shadow-sm ring-2 ring-secondary/30 flex-shrink-0">
+            DC
+          </div>
+          <div class="flex flex-col text-left">
+            <span class="text-xs font-extrabold text-primary leading-tight whitespace-nowrap">Davide Carrieri</span>
+            <span class="text-[10px] text-on-surface-variant font-medium leading-tight whitespace-nowrap">Logistik-Leitung &amp; KI</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIER 2 (NAVIGATION TOOLBAR ROW): Dedicated Row for the 4 Tabs + Search -->
+    <div class="h-[46px] w-full px-6 flex items-center justify-between bg-surface-container-low/50">
+      <!-- 4 Navigation Tabs -->
+      <nav class="flex items-center gap-2">
+        <button onclick="showTab('inbound')" id="nav-tab-inbound" class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all bg-secondary text-on-secondary shadow-sm flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px]">move_to_inbox</span>
+          <span>Wareneingang (Inbound)</span>
+        </button>
+        <button onclick="showTab('outbound')" id="nav-tab-outbound" class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all text-on-surface-variant hover:text-on-surface hover:bg-surface-container flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px]">qr_code_2</span>
+          <span>Warenausgang (Paperless)</span>
+        </button>
+        <button onclick="showTab('lager')" id="nav-tab-lager" class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all text-on-surface-variant hover:text-on-surface hover:bg-surface-container flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px]">shelves</span>
+          <span>Lager &amp; Bestände</span>
+        </button>
+        <button onclick="showTab('agent')" id="nav-tab-agent" class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all text-on-surface-variant hover:text-on-surface hover:bg-surface-container flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px]">hub</span>
+          <span>Agent &amp; Analytics Hub</span>
+        </button>
+      </nav>
+
+      <!-- Quick Search Bar -->
+      <div class="relative w-64">
+        <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[16px]">search</span>
+        <input id="global-search" class="w-full pl-8 pr-3 py-1 bg-surface-container-lowest border border-surface-container rounded-md text-xs font-mono text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:ring-1 focus:ring-secondary transition-all" placeholder="Bestand, Lieferschein-Nr., SKU..." type="text"/>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="fixed left-0 top-[96px] bottom-0 w-60 bg-primary text-on-primary z-40 flex flex-col justify-between py-6 px-3 shadow-md">
+    <div class="flex flex-col gap-6">
+      <div class="px-3">
+        <div class="text-[11px] uppercase tracking-wider text-on-primary-container font-semibold">Intelligentes Modul</div>
+        <div class="text-sm font-bold text-on-primary mt-0.5">OCR & Auto-Slotting</div>
+      </div>
+
+      <nav class="flex flex-col gap-1">
+        <a href="javascript:showTab('inbound')" id="side-tab-inbound" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold bg-primary-container text-on-primary transition-all">
+          <span class="material-symbols-outlined text-[18px]">document_scanner</span>
+          <span>Inbound / Lieferschein</span>
+        </a>
+        <a href="javascript:showTab('outbound')" id="side-tab-outbound" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-all">
+          <span class="material-symbols-outlined text-[18px]">outbox</span>
+          <span>Outbound / Paperless</span>
+        </a>
+        <a href="javascript:showTab('lager')" id="side-tab-lager" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-all">
+          <span class="material-symbols-outlined text-[18px]">grid_view</span>
+          <span>Regal-Visualisierung</span>
+        </a>
+        <a href="javascript:showTab('agent')" id="side-tab-agent" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-all">
+          <span class="material-symbols-outlined text-[18px]">monitoring</span>
+          <span>Audit-Logs & KPIs</span>
+        </a>
+        <a href="javascript:void(0)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs text-on-primary-container hover:bg-primary-container hover:text-on-primary transition-all">
+          <span class="material-symbols-outlined text-[18px]">shield</span>
+          <span>Pydantic-Shield VPS</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Agent Engine Card -->
+    <div class="p-3 bg-primary-container rounded-lg border border-white/5">
+      <div class="flex items-center justify-between mb-1.5">
+        <span class="text-[11px] text-on-primary-container font-semibold">KI-Pipeline Status</span>
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+      </div>
+      <div class="font-mono text-xs text-on-primary font-bold" id="side-model-name">gemini-2.5-flash</div>
+      <div class="text-[11px] text-on-primary-container mt-1 flex items-center justify-between">
+        <span>Engine: <strong class="text-white">Google Cloud</strong></span>
+        <span>Guard: <strong class="text-emerald-400">Aktiv</strong></span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <div class="pl-60">
+    <main class="w-full pt-[96px] min-h-screen px-6 pb-16">
+
+      <!-- ============================================================== -->
+      <!-- TAB 1: INBOUND / WARENEINGANG & OCR-ERFASSUNG (Stitch Screen 1) -->
+      <!-- ============================================================== -->
+      <div id="view-inbound" class="tab-view block">
+        <!-- Top Operational Banner -->
+        <section class="w-full my-6">
+          <div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 border border-surface-container relative overflow-hidden">
+            <div class="absolute -right-16 -top-16 w-64 h-64 bg-secondary-fixed/40 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="flex flex-col gap-1.5 z-10">
+              <div class="flex items-center gap-3">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-mono text-xs font-semibold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-secondary badge-pulse"></span>
+                  AUTONOMER AGENT AKTIV
+                </span>
+                <span class="font-mono text-xs text-on-surface-variant" id="banner-model-name">Vision-OCR • Gemini 2.5 Flash • Decision Tree</span>
+              </div>
+              <h1 class="text-2xl font-bold text-primary tracking-tight">Inbound OCR &amp; Lieferschein-Erfassung</h1>
+              <p class="text-xs text-on-surface-variant">
+                Vollautomatische Lieferschein-Analyse, Extraktion strukturierter Artikeldaten und deterministische Zuweisung optimaler Regalplätze.
+              </p>
+            </div>
+
+            <!-- Schnell-Aktionen & Test-Muster Buttons -->
+            <div class="flex flex-wrap items-center gap-2.5 z-10 w-full xl:w-auto">
+              <button onclick="loadSample('Lieferschein_muster2.pdf')" class="px-3 py-2 bg-surface-container-low hover:bg-surface-container text-primary text-xs font-semibold rounded-lg border border-surface-container transition-all flex items-center gap-1.5 shadow-sm">
+                <span class="material-symbols-outlined text-[16px] text-secondary">flash_on</span>
+                <span>Muster 1: kalkül (LI-2025-007)</span>
+              </button>
+              <button onclick="loadSample('Lieferschein_muster.pdf')" class="px-3 py-2 bg-surface-container-low hover:bg-surface-container text-primary text-xs font-semibold rounded-lg border border-surface-container transition-all flex items-center gap-1.5 shadow-sm">
+                <span class="material-symbols-outlined text-[16px] text-secondary">description</span>
+                <span>Muster 2: Muster AG</span>
+              </button>
+              <button onclick="loadSample('Lieferschein_muster3.pdf')" class="px-3 py-2 bg-surface-container-low hover:bg-surface-container text-primary text-xs font-semibold rounded-lg border border-surface-container transition-all flex items-center gap-1.5 shadow-sm">
+                <span class="material-symbols-outlined text-[16px] text-secondary">inventory_2</span>
+                <span>Muster 3: Würth (Schwerlast)</span>
+              </button>
+              
+              <label class="cursor-pointer px-4 py-2 bg-secondary hover:bg-secondary-container text-on-secondary text-xs font-bold rounded-lg shadow-sm transition-all flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[18px]">upload_file</span>
+                <span>PDF / Scan hochladen</span>
+                <input id="file-uploader" type="file" accept=".pdf,.docx,.png,.jpg,.jpeg" class="hidden" onchange="uploadCustomFile(event)"/>
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <!-- Loading Overlay for Agent -->
+        <div id="agent-spinner" class="hidden my-4 p-4 rounded-xl bg-secondary-fixed border border-secondary text-on-secondary-fixed flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-2xl text-secondary animate-spin">refresh</span>
+            <div>
+              <div class="text-xs font-bold text-secondary" id="spinner-model-name">Gemini 2.5 Flash analysiert Lieferschein...</div>
+              <div class="text-[11px] text-on-surface-variant font-mono">Multimodale Extraktion &amp; Pydantic-Schema-Validierung aktiv</div>
+            </div>
+          </div>
+          <span class="text-xs font-mono px-2 py-1 bg-surface-container-lowest rounded font-semibold text-secondary">Schritt 1 / 2: Human-in-the-Loop</span>
+        </div>
+
+        <!-- Agent Response Alert Banner (Post-Booking) -->
+        <div id="agent-feedback-banner" class="hidden my-4 p-4 rounded-xl bg-emerald-50 border border-emerald-400 text-emerald-950 flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-emerald-600 text-xl">verified</span>
+              <span class="text-xs font-bold uppercase tracking-wider text-emerald-800">Antwort des Agenten (Deutsch)</span>
+            </div>
+            <span class="font-mono text-[11px] text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Erfolgreich in ERP gebucht</span>
+          </div>
+          <p id="agent-feedback-text" class="text-xs leading-relaxed font-medium text-emerald-900 bg-white/70 p-3 rounded-lg border border-emerald-200">
+            <!-- Will be dynamically filled -->
+          </p>
+        </div>
+
+        <!-- Dual Split Workspace -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch mb-8">
+          
+          <!-- LEFT COLUMN: Lieferschein Dokument-Vorschau -->
+          <div class="lg:col-span-6 flex flex-col h-full">
+            <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm border border-surface-container flex flex-col h-full justify-between">
+              <div class="flex items-center justify-between pb-4 border-b border-surface-container">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-[22px]">picture_as_pdf</span>
+                  </div>
+                  <div>
+                    <div id="doc-filename" class="font-bold text-sm text-primary">Lieferschein_muster2.pdf</div>
+                    <div id="doc-supplier-sub" class="font-mono text-xs text-on-surface-variant">Lieferant: kalkül / Max Mustermann (Linz)</div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-secondary-fixed text-on-secondary-fixed font-mono text-xs font-semibold">
+                    <span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+                    <span id="doc-confidence-badge">99.8% Match</span>
+                  </span>
+                  <!-- CLEAR / DELETE BUTTON WITH PROMINENT X -->
+                  <button onclick="clearCurrentDraft()" title="Lieferschein entfernen (X) / Ansicht leeren" class="px-3 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-error border border-red-200 text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs active:scale-95">
+                    <span class="material-symbols-outlined text-[17px] font-bold text-red-600">close</span>
+                    <span>Entfernen (X)</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Simulated Document Canvas with Dynamic Highlights -->
+              <div class="relative w-full bg-surface-container-low rounded-lg p-5 mt-4 flex-1 shadow-inner select-none font-sans flex flex-col">
+                <div class="relative bg-surface-container-lowest w-full rounded shadow-sm p-6 text-on-surface space-y-5 border border-surface-container flex-1 flex flex-col justify-between">
+                  
+                  <!-- Header of Document -->
+                  <div class="flex justify-between items-start gap-4">
+                    <!-- Lieferant Container -->
+                    <div class="flex flex-col gap-1.5 items-start">
+                      <span class="inline-flex items-center gap-1 bg-secondary text-on-secondary font-mono text-[9px] px-2 py-0.5 rounded shadow-xs font-bold tracking-wider">
+                        <span class="material-symbols-outlined text-[13px]">verified</span>
+                        LIEFERANT [99.9%]
+                      </span>
+                      <div class="p-3.5 rounded-lg bg-secondary-fixed/40 border border-secondary/20 shadow-xs min-w-[240px]">
+                        <p id="doc-preview-lieferant" class="text-sm font-extrabold text-primary">kalkül — Max Mustermann</p>
+                        <p class="text-[11px] text-on-surface-variant mt-0.5">Musterstraße 1, AT-4030 Linz</p>
+                        <p class="text-[11px] text-on-surface-variant font-mono mt-0.5">UID: ATU12345678 • IBAN: AT68 3400...</p>
+                      </div>
+                    </div>
+
+                    <!-- Dokumenten-ID Container -->
+                    <div class="flex flex-col gap-1.5 items-end text-right">
+                      <span class="inline-flex items-center gap-1 bg-secondary text-on-secondary font-mono text-[9px] px-2 py-0.5 rounded shadow-xs font-bold tracking-wider">
+                        <span class="material-symbols-outlined text-[13px]">document_scanner</span>
+                        DOKUMENTEN-ID [100%]
+                      </span>
+                      <div class="p-3.5 rounded-lg bg-secondary-fixed/40 border border-secondary/20 text-right shadow-xs min-w-[190px]">
+                        <div class="text-xs uppercase text-primary font-bold tracking-wide">LIEFERSCHEIN</div>
+                        <div id="doc-preview-nr" class="font-mono font-bold text-secondary text-sm mt-0.5">Nr. LI-2025-007</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Metadata Grid -->
+                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 py-2 bg-surface-container-low/70 p-3 rounded-lg border border-surface-container">
+                    <div class="relative pt-2.5 px-2 pb-1.5 rounded bg-secondary-fixed/30">
+                      <span class="absolute -top-3 left-1.5 bg-secondary text-on-secondary font-mono text-[8px] px-1 py-0.2 rounded shadow-xs font-semibold">PO_SAP</span>
+                      <span class="text-[10px] text-on-surface-variant block uppercase">Bestellung</span>
+                      <span class="font-mono text-xs font-semibold text-primary">#PO-2026-94</span>
+                    </div>
+                    <div class="relative pt-2.5 px-2 pb-1.5 rounded bg-secondary-fixed/30">
+                      <span class="absolute -top-3 left-1.5 bg-secondary text-on-secondary font-mono text-[8px] px-1 py-0.2 rounded shadow-xs font-semibold">DATUM</span>
+                      <span class="text-[10px] text-on-surface-variant block uppercase">Lieferdatum</span>
+                      <span id="doc-preview-datum" class="font-mono text-xs font-semibold text-primary">01.01.2025</span>
+                    </div>
+                    <div>
+                      <span class="text-[10px] text-on-surface-variant block uppercase">Empfänger</span>
+                      <span id="doc-preview-empfaenger" class="text-xs text-primary font-medium truncate block">Manfred Mannmuster</span>
+                    </div>
+                    <div>
+                      <span class="text-[10px] text-on-surface-variant block uppercase">Spediteur</span>
+                      <span class="text-xs text-primary font-medium">Standard Paket</span>
+                    </div>
+                  </div>
+
+                  <!-- Document Line Items Table -->
+                  <div class="relative pt-3.5">
+                    <div class="absolute -top-2.5 left-2 bg-secondary text-on-secondary font-mono text-[9px] px-2 py-0.5 rounded z-10 shadow-xs font-bold">
+                      EXTRAHIERTE ARTIKEL-TABELLE (PYDANTIC-AI)
+                    </div>
+                    <table class="w-full text-left text-xs">
+                      <thead>
+                        <tr class="bg-surface-container text-on-surface font-semibold">
+                          <th class="py-2 px-2.5">Pos</th>
+                          <th class="py-2 px-2.5 font-mono">Artikel-Nr.</th>
+                          <th class="py-2 px-2.5">Bezeichnung</th>
+                          <th class="py-2 px-2.5 text-right font-mono">Menge</th>
+                          <th class="py-2 px-2.5">Einheit</th>
+                        </tr>
+                      </thead>
+                      <tbody id="doc-table-body" class="divide-y divide-surface-container">
+                        <!-- Dynamic rows injected here -->
+                        <tr class="bg-secondary-fixed/20">
+                          <td class="py-2 px-2.5 font-mono">01</td>
+                          <td class="py-2 px-2.5 font-mono font-bold text-secondary">111111</td>
+                          <td class="py-2 px-2.5">Latzhose blau, Gr. 52</td>
+                          <td class="py-2 px-2.5 font-mono text-right font-bold text-primary">1</td>
+                          <td class="py-2 px-2.5">Stück</td>
+                        </tr>
+                        <tr class="bg-secondary-fixed/20">
+                          <td class="py-2 px-2.5 font-mono">02</td>
+                          <td class="py-2 px-2.5 font-mono font-bold text-secondary">222222</td>
+                          <td class="py-2 px-2.5">Latzhose grau, Gr. 54</td>
+                          <td class="py-2 px-2.5 font-mono text-right font-bold text-primary">3</td>
+                          <td class="py-2 px-2.5">Stück</td>
+                        </tr>
+                        <tr class="bg-secondary-fixed/20">
+                          <td class="py-2 px-2.5 font-mono">03</td>
+                          <td class="py-2 px-2.5 font-mono font-bold text-secondary">333333</td>
+                          <td class="py-2 px-2.5">Overall grün, Gr. 53</td>
+                          <td class="py-2 px-2.5 font-mono text-right font-bold text-primary">5</td>
+                          <td class="py-2 px-2.5">Stück</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <!-- Footer Notice -->
+                  <div class="pt-3 border-t border-surface-container text-[11px] text-on-surface-variant flex justify-between">
+                    <span>Eigentumsvorbehalt bis zur vollständigen Bezahlung.</span>
+                    <span class="font-mono text-secondary font-semibold">Status: Bereit zur Bestätigung</span>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Confidence Verification Pill -->
+              <div class="mt-4 flex flex-wrap items-center justify-between gap-3 p-3 bg-surface-container-low rounded-lg text-xs text-on-surface-variant">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[18px] text-secondary">verified</span>
+                  <span>Extraktions-Pipeline: <strong class="text-primary font-mono" id="doc-extract-method">pypdf+vision+pydantic</strong></span>
+                </div>
+                <div class="flex items-center gap-3 font-mono text-[11px]">
+                  <span>Header: <strong class="text-emerald-600">100%</strong></span>
+                  <span>Tabelle: <strong class="text-emerald-600">99.8%</strong></span>
+                  <span>Plätze: <strong class="text-secondary">Berechnet</strong></span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: AI Decision Engine & Warehouse Placement -->
+          <div class="lg:col-span-6 flex flex-col gap-6">
+
+            <!-- Decision Engine Summary Card -->
+            <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm border border-surface-container">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center text-on-secondary shadow-sm">
+                    <span class="material-symbols-outlined text-[22px]">psychology</span>
+                  </div>
+                  <div>
+                    <h2 class="text-base font-bold text-primary">KI-Entscheidungs-Engine &amp; Validierung</h2>
+                    <span class="text-xs text-on-surface-variant">Pydantic-AI Strukturabgleich mit Artikelstamm</span>
+                  </div>
+                </div>
+                <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold">
+                  Status: Prüfung Bereit
+                </span>
+              </div>
+
+              <!-- Summary Tiles -->
+              <div class="grid grid-cols-3 gap-3 mb-5">
+                <div class="p-3 bg-surface-container-low rounded-lg border border-surface-container">
+                  <div class="text-[10px] uppercase text-on-surface-variant font-semibold">Bestell-Referenz</div>
+                  <div class="font-mono text-sm font-bold text-primary mt-0.5">PO-2026-94</div>
+                  <div class="text-[11px] text-secondary mt-1 flex items-center gap-1 font-semibold">
+                    <span class="material-symbols-outlined text-[13px]">check_circle</span> ERP-Match
+                  </div>
+                </div>
+
+                <div class="p-3 bg-surface-container-low rounded-lg border border-surface-container">
+                  <div class="text-[10px] uppercase text-on-surface-variant font-semibold">Lieferant</div>
+                  <div id="tile-lieferant" class="text-sm font-bold text-primary mt-0.5 truncate">kalkül</div>
+                  <div class="text-[11px] text-on-surface-variant mt-1 font-mono">Vendor-ID: V-1029</div>
+                </div>
+
+                <div class="p-3 bg-surface-container-low rounded-lg border border-surface-container">
+                  <div class="text-[10px] uppercase text-on-surface-variant font-semibold">Positionen / Menge</div>
+                  <div id="tile-positions" class="font-mono text-sm font-bold text-primary mt-0.5">3 SKU (9 Stück)</div>
+                  <div class="text-[11px] text-secondary mt-1 font-semibold">Prüfung: 100% OK</div>
+                </div>
+              </div>
+
+              <!-- Optimal Warehouse Slotting Visualization -->
+              <div class="bg-surface-container-low p-4 rounded-xl mb-5 border border-surface-container">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-secondary text-[20px]">hub</span>
+                    <span class="text-xs font-bold text-primary uppercase tracking-wide">Automatischer Regal-Slotting-Algorithmus</span>
+                  </div>
+                  <span class="font-mono text-[10px] bg-secondary-fixed text-on-secondary-fixed px-2 py-0.5 rounded font-semibold">WMS Auto-Slotting Engine</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                  <!-- SVG Rack Map (3x3 Interattivo: Colonne A, B, C; Righe 01, 02, 03) -->
+                  <div class="md:col-span-5 bg-surface-container-lowest rounded-lg p-3 flex flex-col items-center justify-center border border-surface-container">
+                    <div class="w-full flex items-center justify-between mb-2">
+                      <span class="text-[10px] font-mono text-on-surface-variant uppercase tracking-wider font-bold">RACK MAP: REGAL A / B / C</span>
+                      <span class="text-[9px] font-mono text-secondary bg-secondary-fixed/50 px-1.5 py-0.2 rounded font-semibold">Interaktiv</span>
+                    </div>
+                    <svg class="w-full h-32 select-none" viewBox="0 0 216 122">
+                      <!-- Sfondo Rack -->
+                      <rect fill="#f8fafd" height="118" rx="4" stroke="#cbd5e1" stroke-width="1" width="212" x="2" y="2"></rect>
+
+                      <!-- Etichette Colonne Regal A, B, C -->
+                      <text fill="#64748b" font-family="JetBrains Mono" font-size="8" font-weight="bold" text-anchor="middle" x="41" y="12">REGAL A</text>
+                      <text fill="#64748b" font-family="JetBrains Mono" font-size="8" font-weight="bold" text-anchor="middle" x="105" y="12">REGAL B</text>
+                      <text fill="#64748b" font-family="JetBrains Mono" font-size="8" font-weight="bold" text-anchor="middle" x="169" y="12">REGAL C</text>
+
+                      <!-- COLONNA A (A-01-01, A-01-02, A-01-03) -->
+                      <g id="rack-cell-A-01-01" onclick="changeLagerplatz('A-01-01')" class="cursor-pointer transition-all badge-pulse">
+                        <rect id="rect-A-01-01" x="13" y="16" width="56" height="28" rx="3" fill="#0058be" stroke="#2170e4" stroke-width="2"></rect>
+                        <text id="text-A-01-01" x="41" y="34" text-anchor="middle" font-family="JetBrains Mono" font-size="9" font-weight="bold" fill="#ffffff">A-01-01</text>
+                      </g>
+                      <g id="rack-cell-A-01-02" onclick="changeLagerplatz('A-01-02')" class="cursor-pointer transition-all">
+                        <rect id="rect-A-01-02" x="13" y="50" width="56" height="28" rx="3" fill="#eff4ff" stroke="#cbd5e1" stroke-width="1"></rect>
+                        <text id="text-A-01-02" x="41" y="68" text-anchor="middle" font-family="JetBrains Mono" font-size="9" font-weight="500" fill="#0b1c30">A-01-02</text>
+                      </g>
+                      <g id="rack-cell-A-01-03" onclick="changeLagerplatz('A-01-03')" class="cursor-pointer transition-all">
+                        <rect id="rect-A-01-03" x="13" y="84" width="56" height="28" rx="3" fill="#eff4ff" stroke="#cbd5e1" stroke-width="1"></rect>
+                        <text id="text-A-01-03" x="41" y="102" text-anchor="middle" font-family="JetBrains Mono" font-size="9" font-weight="500" fill="#0b1c30">A-01-03</text>
+                      </g>
+
+                      <!-- COLONNA B (B-01-01, B-01-02, B-01-03) -->
+                      <g id="rack-cell-B-01-01" onclick="changeLagerplatz('B-01-01')" class="cursor-pointer transition-all">
+                        <rect id="rect-B-01-01" x="77" y="16" width="56" height="28" rx="3" fill="#eff4ff" stroke="#cbd5e1" stroke-width="1"></rect>
+                        <text id="text-B-01-01" x="105" y="34" text-anchor="middle" font-family="JetBrains Mono" font-size="9" font-weight="500" fill="#0b1c30">B-01-01</text>
+                      </g>
+                      <g id="rack-cell-B-01-02" onclick="changeLagerplatz('B-01-02')" class="cursor-pointer transition-all">
+                        <rect id="rect-B-01-02" x="77" y="50" width="56" height="28" rx="3" fill="#eff4ff" stroke="#cbd5e1" stroke-width="1"></rect>
+                        <text id="text-B-01-02" x="105" y="68" text-anchor="middle" font-family="JetBrains Mono" font-size="9" font-weight="500" fill="#0b1c30">B-01-02</text>
+                      </g>
+                      <g id="rack-cell-B-01-03" onclick="changeLagerplatz('B-01-03')" class="cursor-pointer transition-all">
+                        <rect id="rect-B-01-03" x="77" y="84" width="56" height="28" rx="3" fill="#eff4ff" stroke="#cbd5e1" stroke-width="1"></rect>
+                        <text id="text-B-01-03" x="105" y="102" text-anchor="middle" font-family="JetBrains Mono" font-size="9" font-weight="500" fill="#0b1c30">B-01-03</text>
+                      </g>
+
+                      <!-- COLONNA C (C-01-01, C-01-02, C-01-03) -->
+                      <g id="rack-cell-C-01-01" onclick="changeLagerplatz('C-01-01')" class="cursor-pointer transition-all">
+                        <rect id="rect-C-01-01" x="141" y="16" width="56" height="28" rx="3" fill="#eff4ff" stroke="#cbd5e1" stroke-width="1"></rect>
+                        <text id="text-C-01-01" x="169" y="34" text-anchor="middle" font-family="JetBrains Mono" font-size="9" font-weight="500" fill="#0b1c30">C-01-01</text>
+                      </g>
+                      <g id="rack-cell-C-01-02" onclick="changeLagerplatz('C-01-02')" class="cursor-pointer transition-all">
+                        <rect id="rect-C-01-02" x="141" y="50" width="56" height="28" rx="3" fill="#eff4ff" stroke="#cbd5e1" stroke-width="1"></rect>
+                        <text id="text-C-01-02" x="169" y="68" text-anchor="middle" font-family="JetBrains Mono" font-size="9" font-weight="500" fill="#0b1c30">C-01-02</text>
+                      </g>
+                      <g id="rack-cell-C-01-03" onclick="changeLagerplatz('C-01-03')" class="cursor-pointer transition-all">
+                        <rect id="rect-C-01-03" x="141" y="84" width="56" height="28" rx="3" fill="#eff4ff" stroke="#cbd5e1" stroke-width="1"></rect>
+                        <text id="text-C-01-03" x="169" y="102" text-anchor="middle" font-family="JetBrains Mono" font-size="9" font-weight="500" fill="#0b1c30">C-01-03</text>
+                      </g>
+                    </svg>
+
+                    <!-- LOC Code & Legenda Rack su riga compatta -->
+                    <div class="mt-2.5 flex items-center justify-between text-[11px] font-mono w-full pt-1.5 border-t border-surface-container">
+                      <div id="rack-loc-code" class="flex items-center gap-1.5 font-bold text-secondary">
+                        <span class="w-2 h-2 rounded-full bg-secondary"></span>
+                        <span>LOC: A-01-01 (Zone Standard)</span>
+                      </div>
+                      <div class="flex items-center gap-2 text-[10px] text-on-surface-variant font-sans">
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-600 inline-block"></span> Voll</span>
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-500 inline-block"></span> 50%</span>
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-blue-100 border border-slate-300 inline-block"></span> Frei</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Allocation Reasoning & Manual Override -->
+                  <div class="md:col-span-7 flex flex-col justify-between h-full space-y-2.5">
+                    <div>
+                      <div class="flex items-center justify-between">
+                        <div id="rack-title" class="font-bold text-sm text-primary">Regal A • Fach 01 • Platz 01</div>
+                        <span class="text-[10px] bg-secondary-fixed text-on-secondary-fixed px-2 py-0.5 rounded font-bold uppercase">Human-in-Loop</span>
+                      </div>
+
+                      <!-- Manual Override Selector -->
+                      <div class="mt-2.5 p-2.5 bg-surface-container-lowest rounded-lg border border-surface-container flex flex-col gap-1.5 shadow-2xs">
+                        <div class="flex items-center justify-between">
+                          <span class="text-[11px] font-semibold text-on-surface-variant flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[15px] text-secondary">tune</span>
+                            <span>Lagerplatz manuell anpassen:</span>
+                          </span>
+                          <span class="text-[10px] text-secondary font-mono font-bold bg-secondary-fixed/50 px-1.5 py-0.2 rounded">Override</span>
+                        </div>
+                        <select id="select-lagerplatz" onchange="changeLagerplatz(this.value)" class="w-full text-xs font-mono font-bold bg-white border border-secondary/40 text-secondary rounded-md px-2.5 py-1.5 focus:ring-2 focus:ring-secondary/20 focus:border-secondary focus:outline-none shadow-sm transition-all">
+                          <option value="A-01-01">A-01-01 (Regal A · Fach 01 · Frei / Empfohlen)</option>
+                          <option value="A-01-02">A-01-02 (Regal A · Fach 02 · Frei · Schnelldreher)</option>
+                          <option value="A-01-03">A-01-03 (Regal A · Fach 03 · Frei · Kleinteile)</option>
+                          <option value="B-01-01">B-01-01 (Regal B · Fach 01 · Frei · Ergonomie h=1.10m)</option>
+                          <option value="B-01-02">B-01-02 (Regal B · Fach 02 · 🔴 VOLL BELEGT - 100%)</option>
+                          <option value="B-01-03">B-01-03 (Regal B · Fach 03 · Frei · Sicherheitszone)</option>
+                          <option value="C-01-01">C-01-01 (Regal C · Fach 01 · Frei · Schwerlast Boden)</option>
+                          <option value="C-01-02">C-01-02 (Regal C · Fach 02 · 🟠 TEILBELEGT - Größe reicht nicht)</option>
+                          <option value="C-01-03">C-01-03 (Regal C · Fach 03 · Frei · Sperrgut / Träger)</option>
+                        </select>
+                      </div>
+
+                      <!-- Button to Open Rack Map Modal -->
+                      <button onclick="openRegalModal()" type="button" class="mt-2 w-full py-1.5 px-3 bg-surface-container hover:bg-secondary-fixed text-secondary text-xs font-bold rounded border border-surface-container flex items-center justify-center gap-1.5 transition-all shadow-sm">
+                        <span class="material-symbols-outlined text-[16px]">grid_view</span>
+                        <span>Auf Regal-Plan ansehen &amp; Fach visuell wählen</span>
+                      </button>
+
+                      <div class="p-2 bg-surface-container-lowest rounded text-on-surface-variant text-[11px] leading-relaxed mt-2 border border-surface-container">
+                        <strong class="text-primary">KI-Begründung:</strong>
+                        <span id="rack-reasoning">
+                          Kategorie Arbeitsschutz / Kleidung. Kurzer Laufweg ab Wareneingangstor 1. Ausreichende Fachkapazität vorhanden (200 Einheiten Kapazität, 95% frei).
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs font-mono pt-1">
+                      <span class="text-on-surface-variant">Freie Kapazität: <strong id="rack-cap-text" class="text-primary font-bold">190 Stk</strong></span>
+                      <span class="text-secondary font-semibold">FIFO-Standard: Aktiv</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 100x150 mm Warehouse Label Preview (ReportLab Mockup) -->
+              <div class="bg-surface-container-lowest p-4 rounded-xl border border-surface-container shadow-sm mb-5">
+                <div class="flex items-center justify-between mb-3">
+                  <span class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">
+                    Echtzeit-Etikett (100 × 150 mm PDF / ZPL)
+                  </span>
+                  <span class="font-mono text-[11px] text-secondary font-semibold">QR: ARTIKEL|MENGE</span>
+                </div>
+
+                <div class="bg-surface-container-lowest p-4 rounded-lg border-2 border-primary/20 max-w-sm mx-auto text-primary shadow-sm font-sans">
+                  <!-- Header -->
+                  <div class="flex justify-between items-start pb-2 border-b border-surface-container">
+                    <div>
+                      <span id="label-sku" class="font-mono text-base font-bold tracking-tight block">111111</span>
+                      <span id="label-desc" class="text-xs text-on-surface-variant block font-medium">Latzhose blau, Gr. 52</span>
+                    </div>
+                    <span class="font-mono text-[10px] bg-primary text-on-primary px-1.5 py-0.5 rounded font-bold uppercase">WARENEINGANG</span>
+                  </div>
+
+                  <!-- FIFO Wareneingangsdatum Banner -->
+                  <div class="my-2 py-1 px-2.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-mono flex items-center justify-between">
+                    <span>WE-DATUM: <strong id="label-we-datum">07.10.2026</strong></span>
+                    <span class="font-bold text-[9px] bg-emerald-200 text-emerald-900 px-1.5 py-0.5 rounded">FIFO PRIO 1</span>
+                  </div>
+
+                  <!-- Location Code Badge -->
+                  <div class="my-2 py-2 px-3 bg-primary text-on-primary rounded flex items-center justify-between">
+                    <div>
+                      <span class="text-[9px] uppercase text-on-primary-container block font-mono">LAGERPLATZ</span>
+                      <span id="label-location" class="font-mono text-lg font-bold text-on-primary">A-01-01</span>
+                    </div>
+                    <span id="label-zone-badge" class="text-[10px] font-bold bg-secondary px-2 py-0.5 rounded text-on-secondary uppercase">Standard</span>
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-2 text-xs py-1 border-b border-surface-container">
+                    <div>
+                      <span class="text-on-surface-variant block text-[10px]">Menge:</span>
+                      <span id="label-menge" class="font-mono font-bold text-sm">1 Stück</span>
+                    </div>
+                    <div>
+                      <span class="text-on-surface-variant block text-[10px]">Lieferschein-Nr.:</span>
+                      <span id="label-ls-nr" class="font-mono font-bold text-xs">LI-2025-007</span>
+                    </div>
+                  </div>
+
+                  <!-- QR Code Mockup (Will dynamically generate real QR) -->
+                  <div class="pt-3 flex flex-col items-center justify-center">
+                    <img id="label-qr-img" src="/api/qr?mock=1" alt="QR Code" class="w-24 h-24 border border-surface-container p-1 rounded bg-white" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=111111|1'"/>
+                    <span id="label-qr-content" class="font-mono text-[10px] tracking-wider text-on-surface-variant mt-1">111111|1</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action Buttons (Human-in-the-Loop) -->
+              <div class="flex flex-col sm:flex-row items-center gap-3">
+                <button onclick="confirmAndBook()" id="btn-confirm-erp" class="w-full sm:flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-secondary hover:bg-secondary-container text-on-secondary font-bold text-xs rounded-lg shadow transition-all active:scale-[0.98]">
+                  <span class="material-symbols-outlined text-[20px]">cloud_done</span>
+                  <span>Prüfen, Bestätigen &amp; in ERP einbuchen</span>
+                </button>
+                
+                <button onclick="printLabelPdf()" id="btn-print-label" class="w-full sm:w-auto flex items-center justify-center gap-2 py-3 px-4 bg-surface-container-high hover:bg-surface-container-highest text-primary font-bold text-xs rounded-lg shadow-sm transition-all">
+                  <span class="material-symbols-outlined text-[20px]">print</span>
+                  <span>Etikett (PDF) öffnen</span>
+                </button>
+
+                <button onclick="openEmailModal()" id="btn-send-email" class="w-full sm:w-auto flex items-center justify-center gap-2 py-3 px-4 bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-300 font-bold text-xs rounded-lg shadow-2xs transition-all active:scale-[0.98]">
+                  <span class="material-symbols-outlined text-[20px] text-sky-600">mail</span>
+                  <span>E-Mail senden</span>
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- Bottom Table: Live Erfasste Lieferscheine Heute -->
+        <section class="w-full bg-surface-container-lowest rounded-xl p-5 shadow-sm border border-surface-container">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 gap-3">
+            <div>
+              <h3 class="text-base font-bold text-primary">Heutige Lieferschein-Eingänge &amp; ERP-Buchungen</h3>
+              <p class="text-xs text-on-surface-variant">Audit-Log der erfassten Belege, Validierungsstatus und ERP-Verbuchung</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-xs text-on-surface-variant">Archiv: <strong class="text-primary font-mono">Realtime SQLite</strong></span>
+              <button onclick="fetchHistory()" class="px-3 py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-primary text-xs font-semibold transition-all flex items-center gap-1.5 border border-surface-container">
+                <span class="material-symbols-outlined text-[16px]">sync</span>
+                <span>Aktualisieren</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="bg-surface-container text-on-surface font-semibold uppercase tracking-wider text-[11px]">
+                  <th class="py-3 px-4 font-mono">Lieferschein-Nr.</th>
+                  <th class="py-3 px-4">Lieferant</th>
+                  <th class="py-3 px-4 font-mono">Datum</th>
+                  <th class="py-3 px-4">Empfänger</th>
+                  <th class="py-3 px-4">Status</th>
+                  <th class="py-3 px-4 text-right">Aktion</th>
+                </tr>
+              </thead>
+              <tbody id="history-table-body" class="divide-y divide-surface-container">
+                <!-- Dynamically loaded from /api/lieferscheine -->
+                <tr class="hover:bg-surface-container-low transition-colors">
+                  <td class="py-3 px-4 font-mono font-bold text-secondary">LI-2025-007</td>
+                  <td class="py-3 px-4 font-medium text-primary">kalkül — Max Mustermann</td>
+                  <td class="py-3 px-4 font-mono text-on-surface-variant">01.01.2025</td>
+                  <td class="py-3 px-4">Manfred Mannmuster</td>
+                  <td class="py-3 px-4">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-semibold">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Gebucht
+                    </span>
+                  </td>
+                  <td class="py-3 px-4 text-right">
+                    <button class="text-secondary hover:underline font-mono text-xs">Details</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- ============================================================== -->
+      <!-- TAB 2: OUTBOUND / WARENAUSGANG & PAPERLESS TOTEM (Screen 2)    -->
+      <!-- ============================================================== -->
+      <div id="view-outbound" class="tab-view hidden">
+        <section class="w-full my-6">
+          <div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-surface-container flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6">
+            <div>
+              <div class="flex items-center gap-2 mb-1.5">
+                <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono text-xs font-semibold flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[14px]">eco</span> ZERO-PAPER INITIATIVE
+                </span>
+                <span class="text-xs text-on-surface-variant font-mono">100% Digitaler Lieferschein</span>
+              </div>
+              <h1 class="text-2xl font-bold text-primary tracking-tight">Outbound: Picking &amp; Lieferschein Paperless QR</h1>
+              <p class="text-xs text-on-surface-variant">
+                Kein Ausdrucken auf Papier mehr nötig: Der Fahrer / Spediteur scannt das digitale Totem. Vollständige rechtliche Rückverfolgbarkeit.
+              </p>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="text-right">
+                <div class="text-xs text-on-surface-variant uppercase font-semibold">Papierersparnis Heute</div>
+                <div class="text-xl font-bold font-mono text-emerald-600">+148 Blatt</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Outbound Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          <!-- Picking & Order Form -->
+          <div class="lg:col-span-6 bg-surface-container-lowest p-5 rounded-xl border border-surface-container shadow-sm space-y-4">
+            <h2 class="text-base font-bold text-primary flex items-center gap-2">
+              <span class="material-symbols-outlined text-secondary">checklist</span>
+              <span>Neue Ausgangs-Lieferung kommissionieren</span>
+            </h2>
+
+            <div class="space-y-3">
+              <div>
+                <label class="block text-xs font-semibold text-on-surface-variant mb-1">Kunde / Empfänger Firma</label>
+                <input id="out-empfaenger" type="text" class="w-full p-2.5 rounded-lg border border-surface-container bg-surface-container-low text-xs font-medium focus:ring-1 focus:ring-secondary focus:outline-none" value="Musterbau Deutschland GmbH (München)"/>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-on-surface-variant mb-1">Kommissionierte Artikel</label>
+                <div class="space-y-2" id="out-items-list">
+                  <div class="flex items-center gap-2">
+                    <input type="text" class="flex-1 p-2 rounded border border-surface-container text-xs font-mono" value="100001 — Sechskantschraube M8x30 DIN 933" readonly/>
+                    <input type="number" class="w-20 p-2 rounded border border-surface-container text-xs font-mono font-bold text-right" value="50"/>
+                    <span class="text-xs font-mono text-on-surface-variant">Stück</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <input type="text" class="flex-1 p-2 rounded border border-surface-container text-xs font-mono" value="100010 — Klebeband OPP 50mm x 66m" readonly/>
+                    <input type="number" class="w-20 p-2 rounded border border-surface-container text-xs font-mono font-bold text-right" value="10"/>
+                    <span class="text-xs font-mono text-on-surface-variant">Rolle</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-2">
+                <button onclick="generateOutboundLS()" class="w-full py-3 px-4 bg-primary hover:bg-primary-container text-on-primary font-bold text-xs rounded-lg transition-all flex items-center justify-center gap-2 shadow">
+                  <span class="material-symbols-outlined text-[18px]">qr_code</span>
+                  <span>Digitalen Lieferschein erstellen &amp; QR-Totem aktivieren</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Digital Paperless Totem Display -->
+          <div class="lg:col-span-6 bg-surface-container-lowest p-5 rounded-xl border border-surface-container shadow-sm flex flex-col items-center text-center">
+            <span class="text-[11px] font-mono text-secondary font-bold uppercase tracking-wider mb-1">
+              Fahrer-Terminal &amp; Spediteurs-Totem
+            </span>
+            <h3 id="out-totem-title" class="text-lg font-bold text-primary mb-3">Lieferschein Digital: Bereit zum Scan</h3>
+
+            <!-- Big QR Totem Card -->
+            <div class="p-6 bg-surface-container-low rounded-2xl border-2 border-secondary/30 flex flex-col items-center max-w-sm w-full shadow-inner">
+              <img id="out-totem-qr" src="/api/qr?ls_nummer=LS-OUT-2026-0042" alt="Digital Lieferschein QR" class="w-48 h-48 bg-white p-2 rounded-xl shadow-md"/>
+              
+              <div class="mt-4 font-mono font-bold text-sm text-primary" id="out-totem-nr">LS-OUT-2026-0042</div>
+              <div class="text-xs text-on-surface-variant mt-1" id="out-totem-empf">Musterbau Deutschland GmbH</div>
+              
+              <div class="mt-3 px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full font-mono text-[11px] font-semibold flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">check</span>
+                <span>Zertifiziertes Zero-Paper Dokument</span>
+              </div>
+
+              <a id="out-totem-link" href="/ls/LS-OUT-2026-0042" target="_blank" class="mt-3 inline-flex items-center gap-1 px-3 py-1.5 bg-primary hover:bg-slate-800 text-on-primary rounded-lg text-xs font-bold transition-all shadow-sm">
+                <span class="material-symbols-outlined text-[15px]">open_in_new</span>
+                <span>Als Fahrer / Kunde öffnen</span>
+              </a>
+            </div>
+
+            <div class="mt-4 text-xs text-on-surface-variant max-w-md">
+              Der Spediteur/Fahrer (DHL, Dachser, Schenker) scannt diesen QR-Code mit jedem Smartphone oder MDE-Gerät. Kein Druckerausfall, kein Papierverbrauch, sofortige digitale Bestätigung.
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ============================================================== -->
+      <!-- TAB 3: LAGER & BESTÄNDE (WMS Inventory)                        -->
+      <!-- ============================================================== -->
+      <div id="view-lager" class="tab-view hidden">
+        <section class="w-full my-6">
+          <div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-surface-container flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h1 class="text-2xl font-bold text-primary tracking-tight">WMS Lagerbestand &amp; Regalplätze</h1>
+              <p class="text-xs text-on-surface-variant">Echtzeit-Bestände in Regalen A, B, C und D. Dynamisch aktualisiert nach jeder Einbuchung.</p>
+            </div>
+            <button onclick="fetchArticles()" class="px-3.5 py-2 bg-secondary text-on-secondary rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm hover:bg-secondary-container transition-all">
+              <span class="material-symbols-outlined text-[18px]">sync</span>
+              <span>Bestände neu laden</span>
+            </button>
+          </div>
+        </section>
+
+        <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm border border-surface-container">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="bg-surface-container text-on-surface font-semibold uppercase tracking-wider text-[11px]">
+                  <th class="py-3 px-4 font-mono">Artikel-Nr.</th>
+                  <th class="py-3 px-4">Bezeichnung</th>
+                  <th class="py-3 px-4">Kategorie</th>
+                  <th class="py-3 px-4 font-mono">Lagerplatz</th>
+                  <th class="py-3 px-4 font-mono text-right">Bestand</th>
+                  <th class="py-3 px-4">Einheit</th>
+                  <th class="py-3 px-4">Status</th>
+                </tr>
+              </thead>
+              <tbody id="inventory-table-body" class="divide-y divide-surface-container">
+                <!-- Dynamically loaded from /api/artikel -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================== -->
+      <!-- TAB 4: AGENT & ANALYTICS HUB (Stitch Screen 3)                 -->
+      <!-- ============================================================== -->
+      <div id="view-agent" class="tab-view hidden">
+        <section class="w-full my-6">
+          <div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-surface-container">
+            <h1 class="text-2xl font-bold text-primary tracking-tight">Hub Agente ERP: OCR, Automatisierung &amp; Paperless Logistik</h1>
+            <p class="text-xs text-on-surface-variant mt-1">
+              End-to-End Metriken der autonomen Verarbeitungspipeline (Vision + Qwen 3.8 27B + Pydantic Guard).
+            </p>
+          </div>
+        </section>
+
+        <!-- KPI 4 Cards Grid -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="p-4 bg-surface-container-lowest rounded-xl border border-surface-container shadow-sm">
+            <div class="text-xs text-on-surface-variant font-semibold uppercase">Lieferscheine Erfasst</div>
+            <div class="text-2xl font-bold font-mono text-primary mt-1">1.420</div>
+            <div class="text-[11px] text-emerald-600 mt-1 font-semibold">100% Valide Schemas</div>
+          </div>
+          <div class="p-4 bg-surface-container-lowest rounded-xl border border-surface-container shadow-sm">
+            <div class="text-xs text-on-surface-variant font-semibold uppercase">Etiketten Gedruckt</div>
+            <div class="text-2xl font-bold font-mono text-secondary mt-1">3.890</div>
+            <div class="text-[11px] text-on-surface-variant mt-1 font-mono">100 × 150 mm Zebra Format</div>
+          </div>
+          <div class="p-4 bg-surface-container-lowest rounded-xl border border-surface-container shadow-sm">
+            <div class="text-xs text-on-surface-variant font-semibold uppercase">Papierlose Lieferscheine</div>
+            <div class="text-2xl font-bold font-mono text-emerald-600 mt-1">842</div>
+            <div class="text-[11px] text-emerald-700 mt-1 font-semibold">-46.7 kg CO2 vermieden</div>
+          </div>
+          <div class="p-4 bg-surface-container-lowest rounded-xl border border-surface-container shadow-sm">
+            <div class="text-xs text-on-surface-variant font-semibold uppercase">Ø Durchlaufzeit</div>
+            <div class="text-2xl font-bold font-mono text-primary mt-1">18 sec</div>
+            <div class="text-[11px] text-secondary mt-1 font-semibold">vs. 12 Min. Manuell</div>
+          </div>
+        </div>
+
+        <!-- Architecture Flow Banner -->
+        <div class="bg-surface-container-lowest p-6 rounded-xl border border-surface-container shadow-sm mb-6">
+          <h2 class="text-base font-bold text-primary mb-3">Autonome Pipeline-Architektur (E2E)</h2>
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-3 text-center text-xs">
+            <div class="p-3 bg-surface-container-low rounded-lg border border-surface-container">
+              <div class="font-bold text-secondary font-mono">STEP 1</div>
+              <div class="font-semibold text-primary mt-1">Dokument-Upload</div>
+              <div class="text-[10px] text-on-surface-variant mt-1">PDF, DOCX oder Foto-Scan</div>
+            </div>
+            <div class="p-3 bg-surface-container-low rounded-lg border border-surface-container">
+              <div class="font-bold text-secondary font-mono">STEP 2</div>
+              <div class="font-semibold text-primary mt-1">Vision &amp; OCR</div>
+              <div class="text-[10px] text-on-surface-variant mt-1">PyMuPDF Rendern + Vision-LLM</div>
+            </div>
+            <div class="p-3 bg-surface-container-low rounded-lg border border-surface-container">
+              <div class="font-bold text-secondary font-mono">STEP 3</div>
+              <div class="font-semibold text-primary mt-1">Pydantic Guard</div>
+              <div class="text-[10px] text-on-surface-variant mt-1">Schema-Zwang &amp; Bereinigung</div>
+            </div>
+            <div class="p-3 bg-secondary-fixed/50 rounded-lg border border-secondary">
+              <div class="font-bold text-secondary font-mono">STEP 4: GATE</div>
+              <div class="font-semibold text-primary mt-1">Human-in-the-Loop</div>
+              <div class="text-[10px] text-on-surface-variant mt-1">Mensch prüft &amp; bestätigt</div>
+            </div>
+            <div class="p-3 bg-surface-container-low rounded-lg border border-surface-container">
+              <div class="font-bold text-secondary font-mono">STEP 5</div>
+              <div class="font-semibold text-primary mt-1">ERP &amp; Etikett</div>
+              <div class="text-[10px] text-on-surface-variant mt-1">Auto-Slotting &amp; PDF-Generierung</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ================= JAVASCRIPT APP LOGIC ================= -->
+  <script>
+    // State
+    let currentDraft = null;
+    let paperSavedCount = 3892;
+
+    // Tab Navigation
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('block'));
+      
+      const target = document.getElementById('view-' + tabId);
+      if (target) {
+        target.classList.remove('hidden');
+        target.classList.add('block');
+      }
+
+      // Update Nav Buttons
+      ['inbound', 'outbound', 'lager', 'agent'].forEach(id => {
+        const topBtn = document.getElementById('nav-tab-' + id);
+        const sideBtn = document.getElementById('side-tab-' + id);
+        if (id === tabId) {
+          topBtn?.classList.add('bg-secondary', 'text-on-secondary');
+          topBtn?.classList.remove('text-on-surface-variant');
+          sideBtn?.classList.add('bg-primary-container', 'text-on-primary');
+          sideBtn?.classList.remove('text-on-primary-container');
+        } else {
+          topBtn?.classList.remove('bg-secondary', 'text-on-secondary');
+          topBtn?.classList.add('text-on-surface-variant');
+          sideBtn?.classList.remove('bg-primary-container', 'text-on-primary');
+          sideBtn?.classList.add('text-on-primary-container');
+        }
+      });
+
+      if (tabId === 'lager') fetchArticles();
+      if (tabId === 'inbound') fetchHistory();
+    }
+
+    // Load Sample directly from /api/v2/analyse_sample
+    async function loadSample(sampleName) {
+      const spinner = document.getElementById('agent-spinner');
+      spinner?.classList.remove('hidden');
+      document.getElementById('agent-feedback-banner')?.classList.add('hidden');
+
+      try {
+        const res = await fetch('/api/v2/analyse_sample', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ sample: sampleName })
+        });
+        const data = await res.json();
+        spinner?.classList.add('hidden');
+
+        if (data.error) {
+          alert('Fehler bei Analyse: ' + data.error);
+          return;
+        }
+
+        renderDraft(data.entwurf, data.filename || sampleName, data.methode);
+      } catch (err) {
+        spinner?.classList.add('hidden');
+        console.error(err);
+        alert('Verbindungsfehler zur API. Bitte sicherstellen, dass python app.py läuft.');
+      }
+    }
+
+    // Custom File Upload
+    async function uploadCustomFile(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const spinner = document.getElementById('agent-spinner');
+      spinner?.classList.remove('hidden');
+      document.getElementById('agent-feedback-banner')?.classList.add('hidden');
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await fetch('/api/v2/analyse', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        spinner?.classList.add('hidden');
+
+        if (data.error) {
+          alert('Fehler: ' + data.error);
+          return;
+        }
+
+        renderDraft(data.entwurf, file.name, data.methode);
+      } catch (err) {
+        spinner?.classList.add('hidden');
+        console.error(err);
+        alert('Fehler beim Upload zur KI-Pipeline: ' + (err.message || err));
+      } finally {
+        // Reset file input so re-selecting the exact same file fires onchange
+        event.target.value = '';
+      }
+    }
+
+    // Clear / Delete Current Draft (Ansicht leeren)
+    function clearCurrentDraft() {
+      currentDraft = null;
+      document.getElementById('doc-filename').innerText = 'Kein Dokument geladen';
+      document.getElementById('doc-supplier-sub').innerText = 'Lieferant: —';
+      document.getElementById('doc-preview-lieferant').innerText = '—';
+      document.getElementById('doc-preview-nr').innerText = 'Nr. —';
+      document.getElementById('doc-preview-datum').innerText = '—';
+      document.getElementById('doc-preview-empfaenger').innerText = '—';
+      document.getElementById('doc-confidence-badge').innerText = '0% (Leer)';
+      document.getElementById('tile-lieferant').innerText = '—';
+      document.getElementById('tile-positions').innerText = '0 SKU (0 Stk)';
+
+      const tbody = document.getElementById('doc-table-body');
+      if (tbody) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="py-12 text-center text-on-surface-variant font-medium">
+              <div class="flex flex-col items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-4xl text-on-surface-variant/40">description</span>
+                <span class="text-sm font-semibold text-primary">Kein Beleg aktiv</span>
+                <span class="text-xs text-on-surface-variant">Bitte oben ein Muster wählen (1, 2 oder 3) oder eigene Datei hochladen.</span>
+              </div>
+            </td>
+          </tr>
+        `;
+      }
+
+      document.getElementById('label-sku').innerText = '—';
+      document.getElementById('label-desc').innerText = 'Keine Position ausgewählt';
+      document.getElementById('label-menge').innerText = '0';
+      document.getElementById('label-ls-nr').innerText = '—';
+      document.getElementById('label-qr-content').innerText = '—';
+      document.getElementById('label-qr-img').src = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=LEER';
+      
+      changeLagerplatz('A-01-01');
+      document.getElementById('agent-feedback-banner')?.classList.add('hidden');
+      
+      const uploader = document.getElementById('file-uploader');
+      if (uploader) uploader.value = '';
+    }
+
+    // Render Draft into UI
+    function renderDraft(entwurf, filename, methode) {
+      currentDraft = entwurf;
+
+      document.getElementById('doc-filename').innerText = filename;
+      document.getElementById('doc-supplier-sub').innerText = 'Lieferant: ' + (entwurf.lieferant || 'Unbekannt');
+      document.getElementById('doc-preview-lieferant').innerText = entwurf.lieferant || 'kalkül — Max Mustermann';
+      document.getElementById('doc-preview-nr').innerText = 'Nr. ' + (entwurf.lieferschein_nr || 'LI-AUTO');
+      document.getElementById('doc-preview-datum').innerText = entwurf.lieferdatum || '01.01.2025';
+      document.getElementById('doc-preview-empfaenger').innerText = entwurf.empfaenger || 'Manfred Mannmuster';
+      document.getElementById('doc-extract-method').innerText = methode || 'pypdf+vision+pydantic';
+      document.getElementById('doc-confidence-badge').innerText = '99.8% Match';
+
+      document.getElementById('tile-lieferant').innerText = entwurf.lieferant || 'Unbekannt';
+      
+      const posCount = entwurf.positionen ? entwurf.positionen.length : 0;
+      const totalQty = entwurf.positionen ? entwurf.positionen.reduce((acc, p) => acc + (p.menge || 0), 0) : 0;
+      document.getElementById('tile-positions').innerText = `${posCount} SKU (${totalQty} Stk)`;
+
+      // Render table
+      const tbody = document.getElementById('doc-table-body');
+      tbody.innerHTML = '';
+
+      if (entwurf.positionen && entwurf.positionen.length > 0) {
+        entwurf.positionen.forEach((pos, idx) => {
+          const tr = document.createElement('tr');
+          tr.className = 'bg-secondary-fixed/20 hover:bg-secondary-fixed/30 transition-colors';
+          tr.innerHTML = `
+            <td class="py-2 px-2.5 font-mono">${String(idx + 1).padStart(2, '0')}</td>
+            <td class="py-2 px-2.5 font-mono font-bold text-secondary">${pos.artikel_nr}</td>
+            <td class="py-2 px-2.5 font-medium">${pos.bezeichnung}</td>
+            <td class="py-2 px-2.5 font-mono text-right font-bold text-primary">${pos.menge}</td>
+            <td class="py-2 px-2.5">${pos.einheit || 'Stück'}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        // Update Label with first article
+        const first = entwurf.positionen[0];
+        document.getElementById('label-sku').innerText = first.artikel_nr;
+        document.getElementById('label-desc').innerText = first.bezeichnung;
+        document.getElementById('label-menge').innerText = `${first.menge} ${first.einheit || 'Stück'}`;
+        document.getElementById('label-ls-nr').innerText = entwurf.lieferschein_nr || 'LI-DEMO';
+        
+        const qrString = `${first.artikel_nr}|${first.menge}`;
+        document.getElementById('label-qr-content').innerText = qrString;
+        document.getElementById('label-qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(qrString)}`;
+      }
+
+      // Slotting heuristic & intelligent assignment
+      let loc = 'A-01-01';
+      let reasoning = 'Kategorie Arbeitsschutz / Kleidung. Kurzer Laufweg ab Wareneingangstor 1. Freies Fach A-01-01 zugewiesen und als belegt reserviert.';
+      const fnameLower = (filename || '').toLowerCase();
+      const lieferantLower = (entwurf.lieferant || '').toLowerCase();
+
+      if (fnameLower.includes('muster3') || lieferantLower.includes('würth') || lieferantLower.includes('wuerth')) {
+        loc = 'C-01-01';
+        reasoning = 'Würth Industrie Service: Schwerlast-Befestigungselemente & DIN-Verbindungsteile. Automatische Zuweisung in freies Schwerlastregal Bodenlager (Regal C, Fach 01) für Flurförderzeuge.';
+      } else if (fnameLower.includes('muster') && !fnameLower.includes('2')) {
+        loc = 'B-01-01';
+        reasoning = 'Musterartikel Standard (Muster AG). Dimensionen passend für freies Regal B, Fach 01. Ergonomische Greifhöhe 1.10m.';
+      }
+
+      changeLagerplatz(loc);
+      document.getElementById('rack-reasoning').innerHTML = `<span class="text-emerald-700 font-bold block mb-1">✅ KI-Empfehlung &amp; Belegung:</span>${reasoning}`;
+    }
+
+    // Confirm and Book into ERP
+    async function confirmAndBook() {
+      if (!currentDraft) {
+        alert('Bitte zuerst einen Lieferschein analysieren oder Muster auswählen.');
+        return;
+      }
+
+      const activeLoc = document.getElementById('label-location')?.innerText || '';
+      if (activeLoc.includes('B-01-02') || activeLoc.includes('VOLL')) {
+        alert('❌ ZUWEISUNG ABGELEHNT: Lagerplatz B-01-02 ist voll belegt (100%). Bitte ein freies Fach auswählen!');
+        return;
+      }
+      if (activeLoc.includes('C-01-02') || activeLoc.includes('ZU KLEIN')) {
+        alert('⚠️ ZUWEISUNG ABGELEHNT: Lagerplatz C-01-02 ist teilbelegt und die Fachgröße reicht nicht aus. Bitte ein freies Fach auswählen!');
+        return;
+      }
+
+      const btn = document.getElementById('btn-confirm-erp');
+      const originalHtml = btn.innerHTML;
+      btn.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">refresh</span><span>Verbuchen in ERP...</span>';
+      btn.classList.add('opacity-80', 'pointer-events-none');
+
+      try {
+        const res = await fetch('/api/v2/bestaetigen', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ entwurf: currentDraft })
+        });
+        const result = await res.json();
+
+        btn.innerHTML = '<span class="material-symbols-outlined text-[18px]">check_circle</span><span>Erfolgreich Gebucht!</span>';
+        btn.classList.replace('bg-secondary', 'bg-emerald-600');
+
+        // Show Agent Feedback Message in German
+        const banner = document.getElementById('agent-feedback-banner');
+        const text = document.getElementById('agent-feedback-text');
+        text.innerText = result.text || 'Lieferschein wurde geprüft, Lagerplätze erfolgreich zugewiesen und Bestände im Artikelstamm erhöht.';
+        banner.classList.remove('hidden');
+
+        // Live refresh of both tables: Lieferscheine history + Bestand articles
+        fetchHistory();
+        fetchArticles();
+
+        setTimeout(() => {
+          btn.innerHTML = originalHtml;
+          btn.classList.remove('opacity-80', 'pointer-events-none');
+          btn.classList.replace('bg-emerald-600', 'bg-secondary');
+        }, 3000);
+
+      } catch (err) {
+        console.error(err);
+        btn.innerHTML = originalHtml;
+        btn.classList.remove('opacity-80', 'pointer-events-none');
+        alert('Fehler bei der Verbuchung.');
+      }
+    }
+
+    // Open/Print Label PDF
+    function printLabelPdf() {
+      if (!currentDraft || !currentDraft.positionen || currentDraft.positionen.length === 0) {
+        window.open('/api/v2/etikett/ETIKETT_111111_A-01-01.pdf', '_blank');
+        return;
+      }
+      const artNr = currentDraft.positionen[0].artikel_nr;
+      const loc = document.getElementById('label-location').innerText.replace('/', '-');
+      window.open(`/api/v2/etikett/ETIKETT_${artNr}_${loc}.pdf`, '_blank');
+    }
+
+    // Fetch History of Lieferscheine
+    async function fetchHistory() {
+      try {
+        const res = await fetch('/api/lieferscheine');
+        const rows = await res.json();
+        const tbody = document.getElementById('history-table-body');
+        if (!tbody) return;
+
+        tbody.innerHTML = '';
+        rows.forEach(r => {
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-surface-container-low transition-colors';
+          tr.innerHTML = `
+            <td class="py-3 px-4 font-mono font-bold text-secondary">${r.ls_nummer}</td>
+            <td class="py-3 px-4 font-medium text-primary">${r.lieferant || 'Unbekannt'}</td>
+            <td class="py-3 px-4 font-mono text-on-surface-variant">${r.lieferdatum || '-'}</td>
+            <td class="py-3 px-4">${r.empfaenger || 'Carrieri Logistik GmbH'}</td>
+            <td class="py-3 px-4">
+              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full ${r.status === 'gebucht' ? 'bg-emerald-100 text-emerald-800' : 'bg-secondary-fixed text-on-secondary-fixed'} text-[11px] font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full ${r.status === 'gebucht' ? 'bg-emerald-600' : 'bg-secondary'}"></span> ${r.status}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-right">
+              <button onclick="loadSample('${r.ls_nummer.includes('W982') ? 'Lieferschein_muster3.pdf' : (r.ls_nummer.includes('8841') ? 'Lieferschein_muster.pdf' : 'Lieferschein_muster2.pdf')}')" class="text-secondary hover:underline font-mono text-xs">Vorschau</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (e) {
+        console.error('History fetch error', e);
+      }
+    }
+
+    // Fetch Articles for WMS Tab
+    async function fetchArticles() {
+      try {
+        const res = await fetch('/api/artikel');
+        const list = await res.json();
+        const tbody = document.getElementById('inventory-table-body');
+        if (!tbody) return;
+
+        tbody.innerHTML = '';
+        list.forEach(a => {
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-surface-container-low transition-colors';
+          const isLow = a.bestand <= (a.mindestbestand || 10);
+          tr.innerHTML = `
+            <td class="py-3 px-4 font-mono font-bold text-secondary">${a.artikel_nr}</td>
+            <td class="py-3 px-4 font-medium text-primary">${a.bezeichnung}</td>
+            <td class="py-3 px-4">${a.kategorie || 'Allgemein'}</td>
+            <td class="py-3 px-4 font-mono font-bold">${a.lagerplatz || 'Regal-A1'}</td>
+            <td class="py-3 px-4 font-mono text-right font-bold ${isLow ? 'text-error' : 'text-primary'}">${a.bestand}</td>
+            <td class="py-3 px-4">${a.einheit || 'Stück'}</td>
+            <td class="py-3 px-4">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold ${isLow ? 'bg-error-container text-on-error-container' : 'bg-emerald-100 text-emerald-800'}">
+                ${isLow ? 'Nachbestellen' : 'Verfügbar'}
+              </span>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (e) {
+        console.error('Articles fetch error', e);
+      }
+    }
+
+    // Outbound Paperless Generation (Echter digitaler e-Lieferschein)
+    async function generateOutboundLS() {
+      const empf = document.getElementById('out-empfaenger').value || 'Musterbau Deutschland GmbH';
+      
+      const items = [
+        { artikel_nr: '100001', bezeichnung: 'Sechskantschraube M8x30 DIN 933', menge: 50, einheit: 'Stück' },
+        { artikel_nr: '100010', bezeichnung: 'Klebeband OPP 50mm x 66m', menge: 10, einheit: 'Rolle' }
+      ];
+
+      try {
+        const res = await fetch('/api/create_ls', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ empfaenger: empf, positionen: items })
+        });
+        const data = await res.json();
+        const lsNr = data.ls_nummer;
+        const targetUrl = data.ls_url || (window.location.origin + '/ls/' + encodeURIComponent(lsNr));
+
+        document.getElementById('out-totem-title').innerText = 'Lieferschein ' + lsNr + ' Aktiv';
+        document.getElementById('out-totem-nr').innerText = lsNr;
+        document.getElementById('out-totem-empf').innerText = empf;
+
+        // QR Code scansionabile con smartphone -> apre DIRETTAMENTE la bolla digitale web
+        const qrImg = document.getElementById('out-totem-qr');
+        qrImg.src = `/api/qr?ls_nummer=${encodeURIComponent(lsNr)}&qr_data=${encodeURIComponent(targetUrl)}`;
+
+        const totemLink = document.getElementById('out-totem-link');
+        if (totemLink) {
+          totemLink.href = targetUrl;
+        }
+
+        paperSavedCount += 4; // 4 Blatt pro Auftrag gespart
+        document.getElementById('top-paper-counter').innerText = `${paperSavedCount.toLocaleString('de-DE')} Blatt Papier gespart`;
+
+        alert(`✅ Digitaler Lieferschein ${lsNr} generiert!\n\n📱 Der QR-Code verlinkt direkt auf das Web-Dokument:\n${targetUrl}\n\nJedes Smartphone im gleichen WLAN kann ihn jetzt scannen und sofort einsehen.`);
+      } catch (err) {
+        console.error('Fehler create_ls', err);
+        alert('Fehler bei der Generierung des Lieferscheins.');
+      }
+    }
+
+    // ─── Interaktive Regal-Steuerung & Manuelle Platzanpassung (3x3 Grid) ───
+    const ALL_RACK_CELLS = [
+      'A-01-01', 'A-01-02', 'A-01-03',
+      'B-01-01', 'B-01-02', 'B-01-03',
+      'C-01-01', 'C-01-02', 'C-01-03'
+    ];
+
+    function updateInteractiveRack(activeLoc) {
+      ALL_RACK_CELLS.forEach(cellId => {
+        const g = document.getElementById(`rack-cell-${cellId}`);
+        const rect = document.getElementById(`rect-${cellId}`);
+        const text = document.getElementById(`text-${cellId}`);
+        if (!g || !rect || !text) return;
+
+        g.classList.remove('badge-pulse');
+
+        if (cellId === 'B-01-02') {
+          // 🔴 POSTO PIENO FISSO (Rosso)
+          if (activeLoc === 'B-01-02') {
+            g.classList.add('badge-pulse');
+            rect.setAttribute('fill', '#ef4444');
+            rect.setAttribute('stroke', '#991b1b');
+            rect.setAttribute('stroke-width', '2.5');
+            text.setAttribute('fill', '#ffffff');
+            text.setAttribute('font-weight', 'bold');
+          } else {
+            rect.setAttribute('fill', '#fee2e2');
+            rect.setAttribute('stroke', '#ef4444');
+            rect.setAttribute('stroke-width', '1.5');
+            text.setAttribute('fill', '#b91c1c');
+            text.setAttribute('font-weight', 'bold');
+          }
+        } else if (cellId === 'C-01-02') {
+          // 🟠 POSTO A METÀ FISSO (Arancione)
+          if (activeLoc === 'C-01-02') {
+            g.classList.add('badge-pulse');
+            rect.setAttribute('fill', '#f59e0b');
+            rect.setAttribute('stroke', '#b45309');
+            rect.setAttribute('stroke-width', '2.5');
+            text.setAttribute('fill', '#ffffff');
+            text.setAttribute('font-weight', 'bold');
+          } else {
+            rect.setAttribute('fill', '#fef3c7');
+            rect.setAttribute('stroke', '#f59e0b');
+            rect.setAttribute('stroke-width', '1.5');
+            text.setAttribute('fill', '#b45309');
+            text.setAttribute('font-weight', 'bold');
+          }
+        } else if (cellId === activeLoc) {
+          // 🔵 POSTO LIBERO SELEZIONATO: BLU CON PULSE (COME PRIMA!)
+          g.classList.add('badge-pulse');
+          rect.setAttribute('fill', '#0058be');
+          rect.setAttribute('stroke', '#2170e4');
+          rect.setAttribute('stroke-width', '2.5');
+          text.setAttribute('fill', '#ffffff');
+          text.setAttribute('font-weight', 'bold');
+        } else {
+          // ⚪ ALTRI POSTI LIBERI (Azzurro neutro)
+          rect.setAttribute('fill', '#eff4ff');
+          rect.setAttribute('stroke', '#cbd5e1');
+          rect.setAttribute('stroke-width', '1');
+          text.setAttribute('fill', '#0b1c30');
+          text.setAttribute('font-weight', '500');
+        }
+      });
+    }
+
+    function changeLagerplatz(loc) {
+      if (!loc) return;
+      
+      const btn = document.getElementById('btn-confirm-erp');
+      const p = loc.split('-');
+      const regal = p[0] || 'A';
+      const fach = p[1] || '01';
+      const platz = p[2] || '01';
+
+      updateInteractiveRack(loc);
+
+      if (loc === 'B-01-02') {
+        // 🔴 SOLO A QUESTO DICE NO: PIENO
+        document.getElementById('label-location').innerText = 'B-01-02 (VOLL)';
+        document.getElementById('rack-title').innerText = `Regal B • Fach 02 • Platz 02`;
+        document.getElementById('rack-loc-code').innerHTML = `<span class="w-2 h-2 rounded-full bg-error"></span> <span class="text-error font-bold font-mono">LOC: B-01-02 (Nicht verfügbar ❌)</span>`;
+        document.getElementById('rack-reasoning').innerHTML = `<strong class="text-error font-bold">❌ Zuweisung abgelehnt:</strong> Lagerplatz B-01-02 ist voll belegt (0 Stk freie Kapazität, 100% Auslastung). Eine Einlagerung ist hier physikalisch gesperrt. Bitte ein freies Fach wählen.`;
+        document.getElementById('rack-cap-text').innerHTML = `<span class="text-error font-bold">0 Stk (100% voll)</span>`;
+        
+        const badge = document.getElementById('label-zone-badge');
+        if (badge) {
+          badge.className = 'text-[10px] font-bold bg-error text-white px-2 py-0.5 rounded uppercase';
+          badge.innerText = 'GESPERRT ⛔';
+        }
+
+        if (btn) {
+          btn.disabled = true;
+          btn.className = 'w-full sm:flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-error text-white font-bold text-xs rounded-lg shadow cursor-not-allowed opacity-85';
+          btn.innerHTML = '<span class="material-symbols-outlined text-[20px]">block</span><span>Platz voll belegt! Bitte freies Fach wählen</span>';
+        }
+
+      } else if (loc === 'C-01-02') {
+        // 🟠 SOLO A QUESTO DICE NO: A METÀ / GRANDEZZA NON BASTA
+        document.getElementById('label-location').innerText = 'C-01-02 (ZU KLEIN)';
+        document.getElementById('rack-title').innerText = `Regal C • Fach 02 • Platz 02`;
+        document.getElementById('rack-loc-code').innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500"></span> <span class="text-amber-700 font-bold font-mono">LOC: C-01-02 (Nicht verfügbar ⚠️)</span>`;
+        document.getElementById('rack-reasoning').innerHTML = `<strong class="text-amber-800 font-bold">⚠️ Zuweisung abgelehnt:</strong> Lagerplatz C-01-02 ist teilbelegt. Die Fachgröße reicht für diese Sendung nicht aus (Überhang- & Kollisionsgefahr). Bitte größeres freies Fach wählen.`;
+        document.getElementById('rack-cap-text').innerHTML = `<span class="text-amber-700 font-bold">12 Stk frei (Größe unzureichend!)</span>`;
+
+        const badge = document.getElementById('label-zone-badge');
+        if (badge) {
+          badge.className = 'text-[10px] font-bold bg-amber-500 text-white px-2 py-0.5 rounded uppercase';
+          badge.innerText = 'KAPAZITÄT ⚠️';
+        }
+
+        if (btn) {
+          btn.disabled = true;
+          btn.className = 'w-full sm:flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-amber-600 text-white font-bold text-xs rounded-lg shadow cursor-not-allowed opacity-85';
+          btn.innerHTML = '<span class="material-symbols-outlined text-[20px]">warning</span><span>Fach zu klein - Bitte freies Fach wählen</span>';
+        }
+
+      } else {
+        // 🔵 TUTTI GLI ALTRI: LIBERI! SISTEMA E SCELTA MANUALE FUNZIONANO COME PRIMA IN BLU
+        document.getElementById('label-location').innerText = loc;
+        document.getElementById('rack-title').innerText = `Regal ${regal} • Fach ${fach} • Platz ${platz}`;
+
+        let zone = 'Standard';
+        let reasoning = `Kategorie Arbeitsschutz / Kleidung. Kurzer Laufweg ab Wareneingangstor 1. Ausreichende Fachkapazität vorhanden (200 Einheiten Kapazität, 95% frei).`;
+        let cap = '190 Stk';
+
+        if (regal === 'B' && platz === '03') {
+          zone = 'Sicherheitszone';
+          reasoning = `Sicherheitsbereich / Überwachungszone (Regal B, Fach ${fach}). Spezialbelüftung aktiv.`;
+          cap = '160 Stk';
+        } else if (regal === 'B' && platz === '01') {
+          zone = 'Ergonomie';
+          reasoning = `Musterartikel Standard (Muster AG). Ergonomische Greifhöhe h=1.10m (Regal B, Fach 01). Schneller Zugriff für Kommissionierer.`;
+          cap = '180 Stk';
+        } else if (regal === 'C' && platz === '01') {
+          zone = 'Schwerlast';
+          reasoning = `Würth Industrie Service: Schwerlast-Befestigungselemente & DIN-Verbindungsteile. Zuweisung Schwerlastregal Bodenlager (Regal C, Fach 01) für Flurförderzeuge.`;
+          cap = '500 Stk';
+        } else if (regal === 'C' && platz === '03') {
+          zone = 'Sperrgut';
+          reasoning = `Langteile- & Sperrgut-Bereich (Regal C, Fach 03). Überlänge zulässig.`;
+          cap = '250 Stk';
+        } else if (regal === 'A' && platz === '02') {
+          zone = 'Schnelldreher';
+          reasoning = `Schnelldreher-Zone (Regal A, Fach 02). Unmittelbar am Wareneingangstor 1. Hohe Umschlagshäufigkeit.`;
+          cap = '175 Stk';
+        } else if (regal === 'A' && platz === '03') {
+          zone = 'Kleinteile';
+          reasoning = `Kleinteilelagerung (Regal A, Fach 03). Optimale Fachtiefe für Kartonagen.`;
+          cap = '210 Stk';
+        }
+
+        document.getElementById('rack-loc-code').innerHTML = `<span class="w-2 h-2 rounded-full bg-secondary"></span> <span class="font-bold font-mono text-secondary">LOC: ${loc} (Zone ${zone})</span>`;
+        document.getElementById('rack-reasoning').innerHTML = `<strong class="text-primary font-bold">KI-Begründung:</strong> ${reasoning}`;
+        document.getElementById('rack-cap-text').innerHTML = `<strong class="text-primary font-bold">${cap}</strong>`;
+
+        const badge = document.getElementById('label-zone-badge');
+        if (badge) {
+          badge.className = 'text-[10px] font-bold bg-secondary px-2 py-0.5 rounded text-on-secondary uppercase';
+          badge.innerText = zone;
+        }
+
+        if (btn) {
+          btn.disabled = false;
+          btn.className = 'w-full sm:flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-secondary hover:bg-secondary-container text-on-secondary font-bold text-xs rounded-lg shadow transition-all active:scale-[0.98]';
+          btn.innerHTML = '<span class="material-symbols-outlined text-[20px]">cloud_done</span><span>Prüfen, Bestätigen &amp; in ERP einbuchen</span>';
+        }
+      }
+
+      const sel = document.getElementById('select-lagerplatz');
+      if (sel) sel.value = loc;
+
+      const printBtn = document.getElementById('btn-print-label');
+      const artNr = document.getElementById('label-sku').innerText || '111111';
+      if (printBtn) {
+        printBtn.setAttribute('onclick', `window.open('/api/v2/etikett/ETIKETT_${artNr}_${loc}.pdf', '_blank')`);
+      }
+    }
+
+    function openRegalModal() {
+      const modal = document.getElementById('regal-modal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeRegalModal() {
+      const modal = document.getElementById('regal-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function selectRegalCell(loc) {
+      changeLagerplatz(loc);
+      closeRegalModal();
+    }
+
+    // Lieferschein Ansicht leeren (X)
+    function clearCurrentDraft() {
+      currentDraft = null;
+      document.getElementById('doc-preview-lieferant').innerText = '— Bitte Lieferschein wählen / hochladen —';
+      document.getElementById('doc-preview-nr').innerText = 'Nr. —';
+      document.getElementById('doc-preview-datum').innerText = '—';
+      document.getElementById('doc-preview-empfaenger').innerText = '—';
+      document.getElementById('doc-extract-method').innerText = 'Bereit';
+      document.getElementById('doc-confidence-badge').innerText = 'Bereit';
+
+      document.getElementById('tile-lieferant').innerText = 'Kein Dokument geladen';
+      document.getElementById('tile-positions').innerText = '0 SKU (0 Stk)';
+
+      const tbody = document.getElementById('doc-table-body');
+      if (tbody) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="py-8 text-center text-on-surface-variant font-mono text-xs">
+              <div class="flex flex-col items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-3xl text-slate-300">upload_file</span>
+                <span>Kein Lieferschein geladen. Wählen Sie ein Muster oben oder laden Sie ein eigenes PDF hoch.</span>
+              </div>
+            </td>
+          </tr>
+        `;
+      }
+
+      const fileInput = document.getElementById('doc-upload-input');
+      if (fileInput) fileInput.value = '';
+
+      document.getElementById('label-sku').innerText = '—';
+      document.getElementById('label-desc').innerText = 'Kein Artikel ausgewählt';
+      document.getElementById('label-menge').innerText = '—';
+      document.getElementById('label-ls-nr').innerText = '—';
+      document.getElementById('label-location').innerText = 'A-01-01';
+      document.getElementById('label-qr-content').innerText = '—';
+      document.getElementById('label-qr-img').src = '/api/qr?mock=1';
+
+      const banner = document.getElementById('agent-feedback-banner');
+      if (banner) banner.classList.add('hidden');
+
+      changeLagerplatz('A-01-01');
+    }
+
+    // Modal E-Mail Versand & Simulation
+    function openEmailModal() {
+      const modal = document.getElementById('email-modal');
+      if (!modal) return;
+      
+      const lieferant = currentDraft?.lieferant || 'kalkül — Max Mustermann';
+      const lsNr = currentDraft?.lieferschein_nr || 'LI-2025-007';
+      const posCount = currentDraft?.positionen ? currentDraft.positionen.length : 1;
+      const totalQty = currentDraft?.positionen ? currentDraft.positionen.reduce((a, b) => a + (b.menge || 0), 0) : 1;
+      const loc = document.getElementById('label-location')?.innerText || 'A-01-01';
+
+      document.getElementById('email-modal-subject').value = `[LogistiKI ERP] Wareneingangsbestätigung: Lieferschein ${lsNr}`;
+      document.getElementById('email-modal-summary-ls').innerText = lsNr;
+      document.getElementById('email-modal-summary-lieferant').innerText = lieferant;
+      document.getElementById('email-modal-summary-pos').innerText = `${posCount} Positionen (${totalQty} Stück)`;
+      document.getElementById('email-modal-summary-loc').innerText = loc;
+
+      const statusBox = document.getElementById('email-modal-status-box');
+      if (statusBox) statusBox.classList.add('hidden');
+      const spinner = document.getElementById('email-send-spinner');
+      if (spinner) spinner.classList.add('hidden');
+      const text = document.getElementById('email-send-btn-text');
+      if (text) text.innerText = 'E-Mail simulieren & absenden';
+      const btn = document.getElementById('btn-email-simulate');
+      if (btn) btn.disabled = false;
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeEmailModal() {
+      const modal = document.getElementById('email-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function sendSimulatedEmail() {
+      const btn = document.getElementById('btn-email-simulate');
+      const spinner = document.getElementById('email-send-spinner');
+      const text = document.getElementById('email-send-btn-text');
+      const statusBox = document.getElementById('email-modal-status-box');
+
+      if (btn) btn.disabled = true;
+      if (spinner) spinner.classList.remove('hidden');
+      if (text) text.innerText = 'Wird über SMTP gesendet...';
+
+      setTimeout(() => {
+        if (spinner) spinner.classList.add('hidden');
+        if (text) text.innerText = 'Gesendet!';
+        if (statusBox) {
+          statusBox.classList.remove('hidden');
+          statusBox.innerHTML = `
+            <div class="flex items-center gap-2 text-emerald-800 font-bold text-xs">
+              <span class="material-symbols-outlined text-[20px] text-emerald-600">check_circle</span>
+              <span>E-Mail erfolgreich versendet an <strong>davide.carrieri@carrieri-logistik.de</strong>!</span>
+            </div>
+            <p class="text-[11px] text-emerald-700 mt-1 font-mono">Status: 250 OK - Message queued for delivery (TLS encrypted).</p>
+          `;
+        }
+
+        setTimeout(() => {
+          closeEmailModal();
+        }, 2200);
+      }, 1200);
+    }
+
+    function openRealMailClient() {
+      const recipient = document.getElementById('email-modal-to').value || 'davide.carrieri@carrieri-logistik.de';
+      const subject = encodeURIComponent(document.getElementById('email-modal-subject').value || 'LogistiKI ERP Wareneingang');
+      const lsNr = document.getElementById('email-modal-summary-ls').innerText || 'LI-2025-007';
+      const lieferant = document.getElementById('email-modal-summary-lieferant').innerText || 'kalkül — Max Mustermann';
+      const loc = document.getElementById('email-modal-summary-loc').innerText || 'A-01-01';
+
+      const body = encodeURIComponent(
+`Sehr geehrte Damen und Herren,
+
+der Wareneingang für den Lieferschein ${lsNr} (${lieferant}) wurde im LogistiKI ERP System erfolgreich geprüft und verbucht.
+
+Details zur Einlagerung:
+- Lieferschein-Nr.: ${lsNr}
+- Lieferant: ${lieferant}
+- Zugewiesener Lagerplatz: ${loc}
+- Prüfstatus: 100% Digital / Pydantic-AI Validiert
+
+Mit freundlichen Grüßen,
+LogistiKI Warehouse Automation
+Carrieri Logistik GmbH`
+      );
+
+      window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`;
+    }
+
+    // On Load: initialize (rimane in attesa del click dell'utente)
+    window.addEventListener('DOMContentLoaded', () => {
+      fetchHistory();
+      // Setze heutiges Datum für FIFO
+      const weDatumEl = document.getElementById('label-we-datum');
+      if (weDatumEl) {
+        const d = new Date();
+        weDatumEl.innerText = `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
+      }
+      changeLagerplatz('A-01-01');
+    });
+  </script>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: INTERAKTIVER REGAL-PLAN & FACH-AUSWAHL (Stitch WMS)     -->
+  <!-- ============================================================== -->
+  <div id="regal-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-2xl w-full p-6 animate-in fade-in zoom-in duration-200">
+      
+      <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center text-on-secondary shadow-sm">
+            <span class="material-symbols-outlined text-[20px]">grid_view</span>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Interaktiver Lagerplan: Fach wählen</h3>
+            <p class="text-xs text-slate-500">Klicken Sie auf ein Fach im 3×3 Raster (A, B, C / 01, 02, 03), um es zu übernehmen.</p>
+          </div>
+        </div>
+        <button onclick="closeRegalModal()" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <!-- Rack Grid Selector (3 Colonne: Regal A, Regal B, Regal C) -->
+      <div class="my-5 grid grid-cols-1 md:grid-cols-3 gap-3">
+        
+        <!-- Regal A -->
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-slate-800">REGAL A</span>
+              <span class="text-[9px] font-mono text-emerald-700 font-semibold bg-emerald-100 px-1.5 py-0.5 rounded">Standard</span>
+            </div>
+            <p class="text-[11px] text-slate-500 mb-2">Nah an Tor 1 &amp; Schnelldreher</p>
+          </div>
+          <div class="grid grid-cols-1 gap-1.5 text-center text-xs font-mono font-bold">
+            <button onclick="selectRegalCell('A-01-01')" class="py-2 px-3 rounded bg-white hover:bg-blue-600 hover:text-white border border-slate-200 shadow-xs transition-all text-left flex justify-between"><span>A-01-01</span><span class="font-normal text-[10px] text-slate-400">Tor 1</span></button>
+            <button onclick="selectRegalCell('A-01-02')" class="py-2 px-3 rounded bg-white hover:bg-blue-600 hover:text-white border border-slate-200 shadow-xs transition-all text-left flex justify-between"><span>A-01-02</span><span class="font-normal text-[10px] text-slate-400">Schnell</span></button>
+            <button onclick="selectRegalCell('A-01-03')" class="py-2 px-3 rounded bg-white hover:bg-blue-600 hover:text-white border border-slate-200 shadow-xs transition-all text-left flex justify-between"><span>A-01-03</span><span class="font-normal text-[10px] text-slate-400">Kleinteil</span></button>
+          </div>
+        </div>
+
+        <!-- Regal B -->
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-slate-800">REGAL B</span>
+              <span class="text-[9px] font-mono text-blue-700 font-semibold bg-blue-100 px-1.5 py-0.5 rounded">Ergonomie</span>
+            </div>
+            <p class="text-[11px] text-slate-500 mb-2">Greifhöhe h=1.10m Kommissionierung</p>
+          </div>
+          <div class="grid grid-cols-1 gap-1.5 text-center text-xs font-mono font-bold">
+            <button onclick="selectRegalCell('B-01-01')" class="py-2 px-3 rounded bg-white hover:bg-blue-600 hover:text-white border border-slate-200 shadow-xs transition-all text-left flex justify-between items-center"><span>B-01-01</span><span class="font-normal text-[10px] text-slate-400">h=1.10m</span></button>
+            <button onclick="selectRegalCell('B-01-02')" class="py-2 px-3 rounded bg-red-50 text-red-700 border border-red-300 hover:bg-red-600 hover:text-white shadow-xs transition-all text-left flex justify-between items-center font-bold"><span>B-01-02</span><span class="font-mono text-[9px] bg-red-200 text-red-900 px-1.5 py-0.5 rounded font-bold">VOLL 🔴</span></button>
+            <button onclick="selectRegalCell('B-01-03')" class="py-2 px-3 rounded bg-white hover:bg-blue-600 hover:text-white border border-slate-200 shadow-xs transition-all text-left flex justify-between items-center"><span>B-01-03</span><span class="font-normal text-[10px] text-slate-400">Sicher</span></button>
+          </div>
+        </div>
+
+        <!-- Regal C -->
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-slate-800">REGAL C</span>
+              <span class="text-[9px] font-mono text-purple-700 font-semibold bg-purple-100 px-1.5 py-0.5 rounded">Schwerlast</span>
+            </div>
+            <p class="text-[11px] text-slate-500 mb-2">Bodenlager für Gabelstapler &amp; DIN</p>
+          </div>
+          <div class="grid grid-cols-1 gap-1.5 text-center text-xs font-mono font-bold">
+            <button onclick="selectRegalCell('C-01-01')" class="py-2 px-3 rounded bg-white hover:bg-blue-600 hover:text-white border border-slate-200 shadow-xs transition-all text-left flex justify-between items-center"><span>C-01-01</span><span class="font-normal text-[10px] text-slate-400">Boden</span></button>
+            <button onclick="selectRegalCell('C-01-02')" class="py-2 px-3 rounded bg-amber-50 text-amber-800 border border-amber-300 hover:bg-amber-600 hover:text-white shadow-xs transition-all text-left flex justify-between items-center font-bold"><span>C-01-02</span><span class="font-mono text-[9px] bg-amber-200 text-amber-900 px-1.5 py-0.5 rounded font-bold">50% 🟠</span></button>
+            <button onclick="selectRegalCell('C-01-03')" class="py-2 px-3 rounded bg-white hover:bg-blue-600 hover:text-white border border-slate-200 shadow-xs transition-all text-left flex justify-between items-center"><span>C-01-03</span><span class="font-normal text-[10px] text-slate-400">Sperrgut</span></button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="flex items-center justify-between pt-3 border-t border-slate-200 text-xs">
+        <span class="text-slate-500">Klick auf ein Fach aktualisiert sofort Zeichnung &amp; Etikett</span>
+        <button onclick="closeRegalModal()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg transition-all">
+          Schließen
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: E-MAIL BENACHRICHTIGUNG & VERSAND (Simuliert / Mailto)  -->
+  <!-- ============================================================== -->
+  <div id="email-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-xl w-full p-6 animate-in fade-in zoom-in duration-200">
+      
+      <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-sky-600 flex items-center justify-center text-white shadow-md">
+            <span class="material-symbols-outlined text-[22px]">mail</span>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900">E-Mail Benachrichtigung senden</h3>
+            <p class="text-xs text-slate-500">Wareneingangsbestätigung &amp; digitaler Lieferschein</p>
+          </div>
+        </div>
+        <button onclick="closeEmailModal()" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <!-- Form Content -->
+      <div class="my-4 space-y-3.5">
+        
+        <!-- Recipient -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1 flex items-center justify-between">
+            <span>Empfänger (E-Mail)</span>
+            <span class="text-[10px] text-emerald-600 font-mono font-bold bg-emerald-50 px-1.5 py-0.5 rounded">Verifiziert</span>
+          </label>
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-[18px]">alternate_email</span>
+            <input id="email-modal-to" type="email" class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono font-bold text-slate-800 focus:bg-white focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-100 transition-all" value="davide.carrieri@carrieri-logistik.de"/>
+          </div>
+        </div>
+
+        <!-- Subject -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Betreff</label>
+          <input id="email-modal-subject" type="text" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-semibold text-slate-800 focus:bg-white focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-100 transition-all" value="[LogistiKI ERP] Wareneingangsbestätigung: Lieferschein LI-2025-007"/>
+        </div>
+
+        <!-- Summary Preview Box -->
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5 text-xs">
+          <div class="font-bold text-slate-700 text-[11px] uppercase tracking-wider mb-1 flex items-center gap-1">
+            <span class="material-symbols-outlined text-[15px] text-sky-600">receipt_long</span>
+            <span>Sendungsdetails im Anhang:</span>
+          </div>
+          <div class="flex justify-between py-0.5 border-b border-slate-200/60 font-mono text-[11px]">
+            <span class="text-slate-500">Lieferschein-Nr.:</span>
+            <span id="email-modal-summary-ls" class="font-bold text-slate-800">LI-2025-007</span>
+          </div>
+          <div class="flex justify-between py-0.5 border-b border-slate-200/60 text-[11px]">
+            <span class="text-slate-500">Lieferant:</span>
+            <span id="email-modal-summary-lieferant" class="font-semibold text-slate-800 truncate max-w-[260px]">kalkül — Max Mustermann</span>
+          </div>
+          <div class="flex justify-between py-0.5 border-b border-slate-200/60 font-mono text-[11px]">
+            <span class="text-slate-500">Positionen:</span>
+            <span id="email-modal-summary-pos" class="font-semibold text-slate-800">1 Positionen (1 Stück)</span>
+          </div>
+          <div class="flex justify-between py-0.5 font-mono text-[11px]">
+            <span class="text-slate-500">Lagerplatz:</span>
+            <span id="email-modal-summary-loc" class="font-bold text-sky-700">A-01-01</span>
+          </div>
+        </div>
+
+        <!-- Attachments Preview -->
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-500 mb-1.5">Automatische Anhänge (2):</label>
+          <div class="flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-50 text-red-800 border border-red-200 rounded-md text-[11px] font-mono">
+              <span class="material-symbols-outlined text-[15px] text-red-600">picture_as_pdf</span>
+              <span>Etikett_100x150.pdf</span>
+            </span>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-blue-50 text-blue-800 border border-blue-200 rounded-md text-[11px] font-mono">
+              <span class="material-symbols-outlined text-[15px] text-blue-600">attachment</span>
+              <span>Lieferschein_Digital.pdf</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Dynamic Status / Feedback Box -->
+        <div id="email-modal-status-box" class="hidden p-3 bg-emerald-50 border border-emerald-200 rounded-xl transition-all"></div>
+
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row items-center justify-between pt-3 border-t border-slate-200 gap-2">
+        <button onclick="closeEmailModal()" type="button" class="w-full sm:w-auto px-4 py-2 hover:bg-slate-100 text-slate-600 text-xs font-semibold rounded-lg transition-all">
+          Abbrechen
+        </button>
+
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <button onclick="openRealMailClient()" type="button" class="flex-1 sm:flex-initial px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg border border-slate-300 transition-all flex items-center justify-center gap-1.5" title="Öffnet Outlook / Thunderbird / Mail App">
+            <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+            <span>Im Mail-Client öffnen</span>
+          </button>
+          
+          <button id="btn-email-simulate" onclick="sendSimulatedEmail()" type="button" class="flex-1 sm:flex-initial px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold rounded-lg shadow-sm transition-all flex items-center justify-center gap-1.5 active:scale-95">
+            <span id="email-send-spinner" class="material-symbols-outlined text-[16px] animate-spin hidden">refresh</span>
+            <span id="email-send-btn-text">E-Mail simulieren &amp; absenden</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>
