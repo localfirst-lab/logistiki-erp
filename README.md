@@ -113,7 +113,7 @@ flowchart TD
 
 1. Repository klonen:
    ```bash
-   git clone https://github.com/carrieri/logistiki-erp.git
+   git clone https://github.com/localfirst-lab/logistiki-erp.git
    cd logistiki-erp
    ```
 
